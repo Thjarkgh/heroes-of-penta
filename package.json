@@ -1,0 +1,26 @@
+{
+    "name": "heroes-of-penta",
+    "version": "0.0.1",
+    "description": "Heroes of Penta",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Thjarkgh/heroes-of-penta.git"
+    },
+    "keywords": [
+      "web3",
+      "nft",
+      "ai",
+      "game"
+    ],
+    "author": "Thjarkgh",
+    "license": "GPL-3.0-or-later",
+    "bugs": {
+      "url": "https://github.com/Thjarkgh/heroes-of-penta/issues"
+    },
+    "homepage": "https://github.com/Thjarkgh/heroes-of-penta#readme"
+  }
+  
