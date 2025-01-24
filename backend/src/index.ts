@@ -3,17 +3,7 @@ import cors from "cors";
 import compression from "compression";
 import http from "http";
 import path from 'path';
-import { existsSync, } from 'fs';
-
-const getBaseDir = (dir: string) => {
-  if (existsSync(path.resolve(dir, 'build')) && existsSync(path.resolve(dir, 'www'))) { return path.join('www'); }
-  else if (existsSync(path.resolve(dir, '..', 'build')) && existsSync(path.resolve(dir, '..', 'www'))) { return path.join('..', 'www'); }
-  else if (existsSync(path.resolve(dir, '..', '..', 'build')) && existsSync(path.resolve(dir, '..', '..', 'www'))) { return path.join('..', '..', 'www'); }
-  else if (existsSync(path.resolve(dir, '..', '..', '..', 'build')) && existsSync(path.resolve(dir, '..', '..', '..', 'www'))) { return path.join('..', '..', '..', 'www'); }
-  else {
-    throw new Error(`Cannot find folder dist and build for Forntend to serve ${dir} and two folders up`);
-  }
-}
+import { getBaseDir } from "./helper/getBaseDir";
 
 const start = async () => {
   const app = express();
