@@ -4,7 +4,7 @@
     "description": "Heroes of Penta",
     "main": "index.js",
     "scripts": {
-        "build": "cd backend && npm run build && cd ../frontend && npm run build",
+        "build": "cd backend && npm run build-prod && cd ../frontend && npm run build-prod",
         "start": "node ./build/index.js",
         "test": "cd backend && vitest --run && cd ../frontend && vitest --run"
     },

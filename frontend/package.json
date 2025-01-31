@@ -19,14 +19,16 @@
     ],
     "scripts": {
         "dev": "node log.js dev & vite --config vite/config.dev.mjs",
-        "build": "node log.js build & vite build --config vite/config.prod.mjs && rimraf ../www && mkdir -p ../www && cp dist/* ../www -r",
+        "build-dev": "node log.js build & vite build --config vite/config.dev.mjs",
+        "build-prod": "node log.js build & vite build --config vite/config.prod.mjs && rimraf ../www && mkdir -p ../www && cp dist/* ../www -r",
         "dev-nolog": "vite --config vite/config.dev.mjs",
         "build-nolog": "vite build --config vite/config.prod.mjs"
     },
     "dependencies": {
         "phaser": "^3.87.0",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^7.1.3"
     },
     "devDependencies": {
         "@azerion/phaser-input": "^2.0.5",
