@@ -4,20 +4,27 @@ import compression from "compression";
 import http from "http";
 import path from 'path';
 import { getBaseDir } from "./helper/getBaseDir";
+import { config } from "dotenv";
+import SubscriberController from "./controller/subscriberController";
+import SubscriberService from "./service/subscriberService";
+import SmtpService from "./adapter/smtpService";
+import SubscriberRepository from "./repository/mariadb/subscriberRepository";
 
 const start = async () => {
+  config();
+
   const app = express();
   app.use(compression())
   app.use(cors());
   app.use(express.json({ limit: '1mb' }));  // for parsing application/json
   app.use(express.urlencoded({ extended: true, limit: '1mb' })) //for parsing application/x-www-form-urlencoded
 
-  const basedir = getBaseDir(__dirname);
-  const basepath = path.join(__dirname, basedir);
+  const basepath = getBaseDir(__dirname);
   app.use('/favicon.png', express.static(path.resolve(basepath, 'favicon.png')));
   app.use('/style.css', express.static(path.resolve(basepath, 'style.css')));
   app.use('/assets', express.static(path.resolve(basepath, 'assets')));
   app.use('/index.html', express.static(path.resolve(basepath, 'index.html')));
+  
   //app.use('/.well-known/acme-challenge', express.static(path.resolve(basepath, '..', 'certificates', 'acme-challenge')))
   app.get('/.well-known/:folder/:file', (req, res) => {
     if (req.params.folder.includes('..') || req.params.file.includes('..')) {
@@ -34,17 +41,26 @@ const start = async () => {
     }
   });
 
-      // // just used to allow verification of ownership of a domain for Let's encrypt 
-      // app.get('/.well-known',
-      //   function (req, res) {
-      //     console.log("test")
-      //     const fileName = path.resolve(dir, basedir, 'certificates/cert')
-      //     if (existsSync(fileName)) {
-      //       res.sendFile(fileName) 
-      //     } else {
-      //       console.error("FILE NOT FOUND: " + fileName)
-      //     }
-      //   });
+  // DI
+  app.set('views', path.join(__dirname, '..', 'views'));
+  const validateDefined = (x: string | undefined) => { if (!x) { throw new Error(`not defined`); } return x; };
+  const smtpHost = validateDefined(process.env.SMTP_HOST);
+  const smtpPort = Number.parseInt(validateDefined(process.env.SMTP_PORT));
+  const smtpUser = validateDefined(process.env.SMTP_USER);
+  const smtpPassword = validateDefined(process.env.SMTP_PASSWORD);
+  const smtpSender = validateDefined(process.env.SMTP_FROM);
+  const templatesFolder = path.join(__dirname, "..", "views");
+  const smtpClient = new SmtpService(smtpHost, smtpPort, smtpUser, smtpPassword, smtpSender, templatesFolder);
+  const subscriberRepository = await SubscriberRepository.create(
+    validateDefined(process.env.MYSQL_HOST),
+    Number.parseInt(validateDefined(process.env.MYSQL_PORT)),
+    validateDefined(process.env.MYSQL_DATABASE),
+    validateDefined(process.env.MYSQL_USER),
+    validateDefined(process.env.MYSQL_PASSWORD)
+  );
+  const subscriberService = new SubscriberService(subscriberRepository, smtpClient);
+  const subscriberController = new SubscriberController(subscriberService);
+  subscriberController.setupRoutes(app);
   
   app.get('/', function (req, res) { res.sendFile(path.resolve(basepath, 'index.html')) });
 
