@@ -1,0 +1,6 @@
+.gitignore
+README.md
+build
+deploy
+www
+node_modules
