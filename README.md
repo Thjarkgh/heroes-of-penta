@@ -1,1 +1,16 @@
 # heroes-of-penta
+
+You need to create a .env file with the following environment variables:
+
+MYSQL_ROOT_PASSWORD
+MYSQL_DATABASE
+MYSQL_USER
+MYSQL_PASSWORD
+MYSQL_HOST
+MYSQL_PORT
+SALT
+SMTP_HOST
+SMTP_PORT
+SMTP_USER
+SMTP_PASSWORD
+SMTP_FROM
