@@ -1,0 +1,136 @@
+services:
+  mysql:
+    image: mariadb:11.6.2
+    logging:
+      driver: none
+    command: ["--max-allowed-packet=512M"]
+    volumes:
+      - "./deploy/db/container:/var/lib/mysql:Z"
+      - "./deploy/db/init:/docker-entrypoint-initdb.d"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: always
+    networks:
+      - hopdz
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: bitnami/phpmyadmin:5.2.2
+    ports:
+      - 8080:8080
+      - 8443:8443
+    environment:
+        DATABASE_HOST: mysql
+    restart: always
+    networks:
+      - hopdz
+
+  heroes-of-penta-lp-node1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM}
+      - SALT=${SALT}
+    volumes:
+      - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
+    restart: always
+    depends_on:
+    - mysql
+    #depends_on:
+    #  - openlitespeed-heroes-of-penta-lp
+    #networks:
+    #  - hop
+    networks:
+      hopdz:
+        ipv4_address: 172.16.17.2
+    ports:
+      - 4000
+
+  heroes-of-penta-lp-node2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM}
+      - SALT=${SALT}
+    volumes:
+      - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
+    restart: always
+    depends_on:
+    - mysql
+    #depends_on:
+    #  - openlitespeed-heroes-of-penta-lp
+    #networks:
+    #  - hop
+    networks:
+      hopdz:
+        ipv4_address: 172.16.17.3
+    ports:
+      - 4000
+ 
+  litespeed:
+    image: litespeedtech/openlitespeed:latest
+    tty: true
+    # command: "/bin/bash ls -la"
+    volumes:
+        - ./deploy/lsws/conf:/usr/local/lsws/conf
+        - ./deploy/lsws/admin-conf:/usr/local/lsws/admin/conf
+        - ./deploy/bin/container:/usr/local/bin
+        - ./deploy/sites:/var/www/vhosts/
+        - ./deploy/acme:/root/.acme.sh/
+        - ./deploy/logs:/usr/local/lsws/logs/
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+      - 7080:7080
+      #- 8088:8088
+    networks:
+      hopdz:
+        ipv4_address: 172.16.17.1
+      #- hop
+      #- out
+    restart: always
+    #environment:
+    #  TZ: ${TimeZone}
+    #network_mode: "host"
+ 
+networks:
+  hopdz:
+    ipam:
+      config:
+        - subnet: 172.16.0.0/16
+  #hop:
+  #  internal: true
+  #  driver: bridge
+  
+  #out:
+  #  driver: bridge
+    #driver_opts:
+    #  com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+

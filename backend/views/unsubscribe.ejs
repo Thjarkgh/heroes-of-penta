@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsubscribe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .banner {
+            position: relative;
+        }
+        .banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .overlay img {
+            max-width: 50%;
+            max-height: 35%;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="banner">
+            <img src="/assets/banner.jpg" alt="Heroes of Penta">
+            <div class="overlay">
+                <img src="/assets/title.png" alt="Heroes of Penta Title">
+            </div>
+        </div>
+        <div class="content">
+            <h2>Are you sure you want to unsubscribe?</h2>
+            <p>Email: <strong><%= email %></strong></p>
+
+            <form action="/unsubscribe/confirm" method="POST">
+                <input type="hidden" name="email" value="<%= email %>">
+                <input type="hidden" name="secret" value="<%= unsubscribeSecret %>">
+                <button type="submit">Confirm Unsubscribe</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
