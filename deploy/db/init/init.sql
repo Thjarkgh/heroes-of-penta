@@ -1,0 +1,1 @@
+CREATE TABLE `subscriber` ( `email` NVARCHAR(256) NOT NULL, `confirmationSecret` NVARCHAR(256) NOT NULL );
