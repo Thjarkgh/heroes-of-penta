@@ -84,33 +84,38 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
         const subscriberId = getIdRS[0].id;
 
         const secrets = subscriber.getSecrets();
-        const purposes = secrets.map((s) => s.purpose);
-        const purposeSet = new Set(purposes);
-        const uniquePurposes = new Array(...purposeSet.keys());
-        await Promise.all(uniquePurposes.map(async (purpose) => {
-          return connection.execute('INSERT INTO `'+this.database+'`.`subscriberSecretPurpose` ( `purpose` ) SELECT ? WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`subscriberSecretPurpose` WHERE `purpose` = ?);', [ purpose, purpose ]);
-        }));
-        const subscriberSecrets: [ string, Date, string ][] = secrets.map((s) => ([ s.purpose, s.secret.validUntil, s.secret.secret ]));
-        await connection.execute('CREATE TEMPORARY TABLE `nss` ( `purpose` varchar(128) NOT NULL, `validUntil` datetime NOT NULL, `secret` char(64) NOT NULL ); ');
-        await connection.batch('INSERT INTO `nss` ( `purpose`, `validUntil`, `secret` ) VALUES ( ?, ?, ?); ', subscriberSecrets);
-        await connection.execute(
-          'DELETE `s` FROM `'+this.database+'`.`subscriberSecret` AS `s` JOIN `'+this.database+'`.`subscriberSecretPurpose` AS `p` ON `p`.`id` = `s`.`purposeId` ' +
-          'WHERE `s`.`subscriberId` = ? ' +
-          'AND NOT EXISTS (SELECT 0 FROM `nss` WHERE `nss`.`secret` = `s`.`secret` AND `nss`.`purpose` = `p`.`purpose`);', [ subscriberId ]);
-        await connection.execute(
-          'UPDATE `'+this.database+'`.`subscriberSecret` AS `s` ' +
-          'JOIN `'+this.database+'`.`subscriberSecretPurpose` AS `p` ON `p`.`id` = `s`.`purposeId` ' +
-          'JOIN `nss` ON `nss`.`secret` = `s`.`secret` AND `nss`.`purpose` = `p`.`purpose` ' +
-          'SET `s`.`validUntil` = `nss`.`validUntil` '+
-          'WHERE `s`.`subscriberId` = ? AND `s`.`validUntil` <> `nss`.`validUntil`;', [ subscriberId ]);
-        await connection.execute(
-          'INSERT INTO `'+this.database+'`.`subscriberSecret` ( `subscriberId`, `purposeId`, `validUntil`, `secret` ) ' +
-          'SELECT ?, `p`.`id`, `nss`.`validUntil`, `nss`.`secret` ' +
-          'FROM `nss` JOIN `'+this.database+'`.`subscriberSecretPurpose` AS `p` ON `p`.`purpose` = `nss`.`purpose` ' +
-          'WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`subscriberSecret` AS `s` WHERE `s`.`subscriberId` = ? AND `s`.`purposeId` = `p`.`id` AND `s`.`secret` = `nss`.`secret`); ',
-          [ subscriberId, subscriberId ]
-        );
-        await connection.execute('DROP TEMPORARY TABLE `nss`;');
+        if (secrets.length > 0) {
+          const purposes = secrets.map((s) => s.purpose);
+          const purposeSet = new Set(purposes);
+          const uniquePurposes = new Array(...purposeSet.keys());
+          await Promise.all(uniquePurposes.map(async (purpose) => {
+            return connection.execute('INSERT INTO `'+this.database+'`.`subscriberSecretPurpose` ( `purpose` ) SELECT ? WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`subscriberSecretPurpose` WHERE `purpose` = ?);', [ purpose, purpose ]);
+          }));
+          const subscriberSecrets: [ string, Date, string ][] = secrets.map((s) => ([ s.purpose, s.secret.validUntil, s.secret.secret ]));
+          
+          await connection.execute('CREATE TEMPORARY TABLE `nss` ( `purpose` varchar(128) NOT NULL, `validUntil` datetime NOT NULL, `secret` char(64) NOT NULL ); ');
+          await connection.batch('INSERT INTO `nss` ( `purpose`, `validUntil`, `secret` ) VALUES ( ?, ?, ?); ', subscriberSecrets);
+          await connection.execute(
+            'DELETE `s` FROM `'+this.database+'`.`subscriberSecret` AS `s` JOIN `'+this.database+'`.`subscriberSecretPurpose` AS `p` ON `p`.`id` = `s`.`purposeId` ' +
+            'WHERE `s`.`subscriberId` = ? ' +
+            'AND NOT EXISTS (SELECT 0 FROM `nss` WHERE `nss`.`secret` = `s`.`secret` AND `nss`.`purpose` = `p`.`purpose`);', [ subscriberId ]);
+          await connection.execute(
+            'UPDATE `'+this.database+'`.`subscriberSecret` AS `s` ' +
+            'JOIN `'+this.database+'`.`subscriberSecretPurpose` AS `p` ON `p`.`id` = `s`.`purposeId` ' +
+            'JOIN `nss` ON `nss`.`secret` = `s`.`secret` AND `nss`.`purpose` = `p`.`purpose` ' +
+            'SET `s`.`validUntil` = `nss`.`validUntil` '+
+            'WHERE `s`.`subscriberId` = ? AND `s`.`validUntil` <> `nss`.`validUntil`;', [ subscriberId ]);
+          await connection.execute(
+            'INSERT INTO `'+this.database+'`.`subscriberSecret` ( `subscriberId`, `purposeId`, `validUntil`, `secret` ) ' +
+            'SELECT ?, `p`.`id`, `nss`.`validUntil`, `nss`.`secret` ' +
+            'FROM `nss` JOIN `'+this.database+'`.`subscriberSecretPurpose` AS `p` ON `p`.`purpose` = `nss`.`purpose` ' +
+            'WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`subscriberSecret` AS `s` WHERE `s`.`subscriberId` = ? AND `s`.`purposeId` = `p`.`id` AND `s`.`secret` = `nss`.`secret`); ',
+            [ subscriberId, subscriberId ]
+          );
+          await connection.execute('DROP TEMPORARY TABLE `nss`;');
+        } else {
+          await connection.execute('DELETE FROM `'+this.database+'`.`subscriberSecret` WHERE `subscriberId` = ?;', [ subscriberId ]);
+        }
         await connection.commit();
         return subscriber.email;
       }
