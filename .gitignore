@@ -131,3 +131,17 @@ dist
 build/
 
 www/
+
+deploy/lsws/conf/
+
+deploy/db/container/
+
+deploy/htgroup
+
+deploy/htpasswd
+
+deploy/vhconf.conf
+
+deploy/vhconf.conf.txt
+
+deploy/vhconf.conf0
