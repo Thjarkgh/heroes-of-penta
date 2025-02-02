@@ -48,7 +48,7 @@ services:
       - SALT=${SALT}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
-    restart: always
+    restart: on-failure:3
     depends_on:
     - mysql
     #depends_on:
@@ -80,7 +80,7 @@ services:
       - SALT=${SALT}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
-    restart: always
+    restart: on-failure:3
     depends_on:
     - mysql
     #depends_on:
