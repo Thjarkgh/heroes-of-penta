@@ -45,15 +45,15 @@ export default class SubscriberController {
 
     // routes not called from frontend
     app.get("/incompleteregistration", async (req, res, next) => res.render("requestNewConfirmationMail", { email: req.query.email }))
-    app.get("/requestnewconfirmationmail", this.requestNewConfirmationMail)
-    app.get('/unsubscribe', this.unsubscribe);
-    app.post("/unsubscribe/confirm", this.confirmUnsubscribe);
-    app.get('/confirm', this.confirm)
+    app.post("/requestnewconfirmationmail", this.requestNewConfirmationMail.bind(this))
+    app.get('/unsubscribe', this.unsubscribe.bind(this));
+    app.post("/unsubscribe/confirm", this.confirmUnsubscribe.bind(this));
+    app.get('/confirm', this.confirm.bind(this));
   }
 
   async requestNewConfirmationMail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const email = req.query.email;
+      const email = req.body.email;
       if (!email) return void(res.status(400).send("Email is required"));
       if (Array.isArray(email)) return void(res.status(400).send("Only one email!"));
       const result = await this.service.requestNewConfirmationMail(email.toString());

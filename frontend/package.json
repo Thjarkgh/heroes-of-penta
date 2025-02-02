@@ -18,9 +18,9 @@
         "nft"
     ],
     "scripts": {
-        "dev": "node log.js dev & vite --config vite/config.dev.mjs",
-        "build-dev": "node log.js build & vite build --config vite/config.dev.mjs",
-        "build-prod": "node log.js build & vite build --config vite/config.prod.mjs && rimraf ../www && mkdir -p ../www && cp dist/* ../www -r",
+        "dev": "node log.js dev && vite --config vite/config.dev.mjs",
+        "build-dev": "node log.js build && vite build --config vite/config.dev.mjs",
+        "build-prod": "npm ci && node log.js build && vite build --config vite/config.prod.mjs && rimraf ../www && mkdir -p ../www && cp dist/* ../www -r",
         "dev-nolog": "vite --config vite/config.dev.mjs",
         "build-nolog": "vite build --config vite/config.prod.mjs"
     },

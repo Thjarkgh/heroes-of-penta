@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build-dev": "rimraf ./dist && tsc --build && mkdir -p ./dist/views && cp ./views/* ./dist/views",
-    "build-prod": "npm run build-dev && rimraf ../build && mkdir -p ../build && cp package*.json ../build && cp ./dist/* ../build -r && cd ../build && npm ci --omit dev",
+    "build-prod": "npm ci && npm run build-dev && rimraf ../build && mkdir -p ../build && cp package*.json ../build && cp ./dist/* ../build -r && cd ../build && npm ci --omit dev",
     "test": "vitest",
     "start-dev": "node --env-file=../.env dist/index.js",
     "start-prod": "node dist/index.js"
