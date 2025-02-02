@@ -53,7 +53,7 @@ export default class SubscriberController {
 
   async requestNewConfirmationMail(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-      const email = req.query.email;
+      const email = req.body.email;
       if (!email) return void(res.status(400).send("Email is required"));
       if (Array.isArray(email)) return void(res.status(400).send("Only one email!"));
       const result = await this.service.requestNewConfirmationMail(email.toString());
