@@ -82,48 +82,15 @@ function App(props: any) {
     setCanMoveSprite(scene.scene.key !== 'MainMenu');
 
   }
-
-  // const subscribe = () => {
-  //   console.log(email);
-  // }
-
-  // return (
-  //   <div id="app">
-  //     <table style={{maxHeight:"100%", height:"100%", maxWidth: "100%"}}>
-  //       <tbody>
-  //       <tr>
-  //         <td><PhaserGame ref={phaserRef} currentActiveScene={currentScene} /></td>
-  //       </tr>
-  //       <tr>
-  //         <td><input id={id} value={email} onInput={e => setEmail((e.target as any).value)} /><button className="button" onClick={subscribe}>Subscribe to Newsletter</button></td>
-  //       </tr>
-  //       </tbody>
-  //     </table>
-  //   </div>
-  // )
+  
   return (
     <div id="app">
       <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
       <div>
-        <input id="subscriberEmail"  /*style={{position: "relative", left: "8%", bottom: "8px", width: "42%" }}*/ />
+        <input id="subscriberEmail" />
       </div>
     </div>
   )
 }
 
-export default App
-
-/*<div style={{left: 0}}>
-    <div>
-        <button className="button" onClick={changeScene}>Change Scene</button>
-    </div>
-    <div>
-        <button disabled={canMoveSprite} className="button" onClick={moveSprite}>Toggle Movement</button>
-    </div>
-    <div className="spritePosition">Sprite Position:
-        <pre>{`{\n  x: ${spritePosition.x}\n  y: ${spritePosition.y}\n}`}</pre>
-    </div>
-    <div>
-        <button className="button" onClick={addSprite}>Add New Sprite</button>
-    </div>
-</div>*/
+export default App;
