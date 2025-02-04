@@ -1,0 +1,8 @@
+services:
+  mysql:
+    ports:
+      - 3306:3306
+
+  litespeed:
+    ports:
+      - 8080:8080
