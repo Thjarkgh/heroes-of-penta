@@ -26,6 +26,7 @@ services:
       - 8443
     environment:
         DATABASE_HOST: mysql
+        PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
     restart: always
     networks:
       hopdz:
