@@ -14,20 +14,22 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
     networks:
-      - hopdz
+      hopdz:
+        ipv4_address: 172.16.17.10
     ports:
-      - 3306:3306
+      - 3306
 
   phpmyadmin:
     image: bitnami/phpmyadmin:5.2.2
     ports:
-      - 8080:8080
-      - 8443:8443
+      - 8080
+      - 8443
     environment:
         DATABASE_HOST: mysql
     restart: always
     networks:
-      - hopdz
+      hopdz:
+        ipv4_address: 172.16.17.11
 
   heroes-of-penta-lp-node1:
     build:
