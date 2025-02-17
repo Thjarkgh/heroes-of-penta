@@ -21,11 +21,19 @@ export default class MentionsController {
         const challenge = req.query["hub.challenge"];
         const secret = req.query["hub.verify_token"];
 
+        if (mode !== "subscribe") {
+          console.log(`invalid mode: ${mode}`);
+          res.sendStatus(400);
+          return;
+        }
         if (secret !== this.msgSecret) {
-          throw new Error(`invalid secret`);
+          console.log(`invalid secret: ${secret}`);
+          //throw new Error(`invalid secret`);
+          res.sendStatus(400);
+          return;
         }
 
-        res.status(200).send(`${challenge}`);
+        res.send(challenge);
       }
       catch (error) {
         next(error);
