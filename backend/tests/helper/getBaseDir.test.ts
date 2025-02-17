@@ -1,4 +1,4 @@
-import { getBaseDir } from "src/helper/getBaseDir";
+import { getBaseDir } from "../../src/helper/getBaseDir";
 import { describe, it, expect } from "vitest";
 import path from "path";
 
