@@ -49,6 +49,8 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_FROM=${SMTP_FROM}
       - SALT=${SALT}
+      - INSTAGRAM_APP_SECRET=${INSTAGRAM_APP_SECRET}
+      - INSTAGRAM_MSG_SECRET=${INSTAGRAM_MSG_SECRET}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
     restart: on-failure:3
@@ -81,6 +83,8 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_FROM=${SMTP_FROM}
       - SALT=${SALT}
+      - INSTAGRAM_APP_SECRET=${INSTAGRAM_APP_SECRET}
+      - INSTAGRAM_MSG_SECRET=${INSTAGRAM_MSG_SECRET}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
     restart: on-failure:3
