@@ -56,14 +56,20 @@ const start = async () => {
   const smtpPassword = validateDefined(process.env.SMTP_PASSWORD);
   const smtpSender = validateDefined(process.env.SMTP_FROM);
   const templatesFolder = path.join(__dirname, "..", "views");
+
+  const database = validateDefined(process.env.MYSQL_DATABASE);
+  if (database.includes('`')) throw new Error(`database must not include ${"`"}, invalid database name ${database}`);
+  const pool = mariadb.createPool({
+    host: validateDefined(process.env.MYSQL_HOST),
+    user: validateDefined(process.env.MYSQL_USER),
+    password: validateDefined(process.env.MYSQL_PASSWORD),
+    database,
+    port: Number.parseInt(validateDefined(process.env.MYSQL_PORT)),
+    connectionLimit: 50
+  });
+
   const smtpClient = new SmtpService(smtpHost, smtpPort, smtpUser, smtpPassword, smtpSender, templatesFolder);
-  const subscriberRepository = await SubscriberRepository.create(
-    validateDefined(process.env.MYSQL_HOST),
-    Number.parseInt(validateDefined(process.env.MYSQL_PORT)),
-    validateDefined(process.env.MYSQL_DATABASE),
-    validateDefined(process.env.MYSQL_USER),
-    validateDefined(process.env.MYSQL_PASSWORD)
-  );
+  const subscriberRepository = await SubscriberRepository.createWithPool(pool, database);
   const subscriberService = new SubscriberService(subscriberRepository, smtpClient);
   const subscriberController = new SubscriberController(subscriberService);
   subscriberController.setupRoutes(app);
