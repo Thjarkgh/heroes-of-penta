@@ -16,7 +16,12 @@ const start = async () => {
   const app = express();
   app.use(compression())
   app.use(cors());
-  app.use(express.json({ limit: '1mb' }));  // for parsing application/json
+  app.use(express.json({
+    limit: '1mb',
+    verify: (req, res, buffer) => {
+      (req as any).rawBody = buffer;
+    }
+  }));  // for parsing application/json
   app.use(express.urlencoded({ extended: true, limit: '1mb' })) //for parsing application/x-www-form-urlencoded
 
   const basepath = getBaseDir(__dirname);
@@ -42,6 +47,7 @@ const start = async () => {
   });
 
   // DI
+
   app.set('views', path.join(__dirname, '..', 'views'));
   const validateDefined = (x: string | undefined) => { if (!x) { throw new Error(`not defined`); } return x; };
   const smtpHost = validateDefined(process.env.SMTP_HOST);
