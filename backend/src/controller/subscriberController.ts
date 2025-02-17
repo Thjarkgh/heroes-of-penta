@@ -95,7 +95,7 @@ export default class SubscriberController {
     catch (err) {
       next(err);
     }
-}
+  }
 
   async confirm(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     try {

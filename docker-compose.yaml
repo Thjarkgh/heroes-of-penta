@@ -51,6 +51,7 @@ services:
       - SALT=${SALT}
       - INSTAGRAM_APP_SECRET=${INSTAGRAM_APP_SECRET}
       - INSTAGRAM_MSG_SECRET=${INSTAGRAM_MSG_SECRET}
+      - OPENAI_APIKEY=${OPENAI_APIKEY}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
     restart: on-failure:3
@@ -85,6 +86,7 @@ services:
       - SALT=${SALT}
       - INSTAGRAM_APP_SECRET=${INSTAGRAM_APP_SECRET}
       - INSTAGRAM_MSG_SECRET=${INSTAGRAM_MSG_SECRET}
+      - OPENAI_APIKEY=${OPENAI_APIKEY}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
     restart: on-failure:3

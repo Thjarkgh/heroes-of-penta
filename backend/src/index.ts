@@ -9,6 +9,10 @@ import SubscriberController from "./controller/subscriberController";
 import SubscriberService from "./service/subscriberService";
 import SmtpService from "./adapter/smtpService";
 import SubscriberRepository from "./repository/mariadb/subscriberRepository";
+import MentionsRepository from "./repository/mariadb/mentionsRepository";
+import mariadb from "mariadb";
+import MentionsService from "./service/mentionsService";
+import MentionsController from "./controller/mentionsController";
 
 const start = async () => {
   config();
@@ -75,6 +79,13 @@ const start = async () => {
   subscriberController.setupRoutes(app);
   
   app.get('/', function (req, res) { res.sendFile(path.resolve(basepath, 'index.html')) });
+
+  const mentionsRepository = await MentionsRepository.createWithPool(pool, database);
+  const mentionsService = new MentionsService(mentionsRepository);
+  const appSecret = validateDefined(process.env.INSTAGRAM_APP_SECRET);
+  const msgSecret = validateDefined(process.env.INSTAGRAM_MSG_SECRET);
+  const mentionsController = new MentionsController(mentionsService, appSecret, msgSecret);
+  mentionsController.setupRoutes(app);
 
   const server = http.createServer(app);
   await new Promise<void>(resolve => server.listen({ port: 4000 }, resolve));
