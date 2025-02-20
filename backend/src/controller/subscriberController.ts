@@ -46,8 +46,8 @@ export default class SubscriberController {
     // routes not called from frontend
     app.get("/incompleteregistration", async (req, res, next) => res.render("requestNewConfirmationMail", { email: req.query.email }))
     app.post("/requestnewconfirmationmail", this.requestNewConfirmationMail.bind(this))
-    app.get('/unsubscribe', this.unsubscribe.bind(this));
-    app.post("/unsubscribe/confirm", this.confirmUnsubscribe.bind(this));
+    app.get('/unsubscribe', this.requestUnsubscribe.bind(this));
+    app.post('/unsubscribe', this.confirmUnsubscribe.bind(this));
     app.get('/confirm', this.confirm.bind(this));
   }
 
@@ -64,7 +64,7 @@ export default class SubscriberController {
     }
   }
   
-  async unsubscribe(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+  async requestUnsubscribe(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     try {
       const email = req.query.email;
       const secret = req.query.secret;
