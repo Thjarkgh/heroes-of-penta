@@ -14,7 +14,7 @@ export default class SmtpService implements ISmtpClient {
     private readonly templatesFolder: string
   ) {}
 
-  async sendConfirmationMail(email: string, secret: string): Promise<void> {
+  async sendConfirmationMail(email: string, confirmationSecret: string, unsubscribeSecret: string): Promise<void> {
     const transport = nodemailer.createTransport({
       host: this.host,
       port: this.port,
@@ -24,7 +24,7 @@ export default class SmtpService implements ISmtpClient {
         pass: this.password
       }
     });
-    const mail = await ejs.renderFile(path.join(this.templatesFolder, "requestConfirmationMail.ejs"), { email, secret });
+    const mail = await ejs.renderFile(path.join(this.templatesFolder, "requestConfirmationMail.ejs"), { email, confirmationSecret, unsubscribeSecret });
     const result = await transport.sendMail({
       to: email,
       from: this.sender,
@@ -32,12 +32,13 @@ export default class SmtpService implements ISmtpClient {
       html: mail,
       text: `Welcome to the Heroes of Penta!
 
-Please confirm your e-mail address by opening the following link: https://heroesofpenta.com/confirm?email=${email}&token=${secret}
+Please confirm your e-mail address by opening the following link: https://heroesofpenta.com/confirm?email=${email}&token=${confirmationSecret}
 
-If you instead wish to unsubscribe, you can do so at any time by opening the following link: https://heroesofpenta.com/unsubscribe?email=${email}`
+If you instead wish to unsubscribe, you can do so at any time by opening the following link: https://heroesofpenta.com/unsubscribe?email=${email}&secret=${unsubscribeSecret}`
     });
     if (result.rejected.length !== 0 || result.accepted.length !== 1) {
       throw new Error(`SMTP server did not accept email!`);
     }
   }
+
 }

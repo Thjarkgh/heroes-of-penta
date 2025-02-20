@@ -1,3 +1,3 @@
 export default interface ISmtpClient {
-  sendConfirmationMail(address: string, text: string): Promise<void>;
+  sendConfirmationMail(address: string, confirmCode: string, unsubscribeCode: string): Promise<void>;
 }

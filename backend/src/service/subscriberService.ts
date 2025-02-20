@@ -22,7 +22,8 @@ export default class SubscriberService {
     }
     const subscriber = await this.repository.create(email);
     const confirmationRequest = await subscriber.createConfirmationMailCode();
-    await this.smtpClient.sendConfirmationMail(email, confirmationRequest);
+    const unsubscribeCode = await subscriber.createUnsubscribeCode();
+    await this.smtpClient.sendConfirmationMail(email, confirmationRequest, unsubscribeCode);
     await this.repository.save(subscriber);
     return { status: "ok" as const, email };
   }
@@ -30,8 +31,9 @@ export default class SubscriberService {
   async requestNewConfirmationMail(email: string) {
     const subscriber = await this.repository.get(email);
     const confirmationRequest = await subscriber.createConfirmationMailCode();
+    const unsubscribeCode = await subscriber.createUnsubscribeCode();
     await this.repository.save(subscriber);
-    await this.smtpClient.sendConfirmationMail(email, confirmationRequest);
+    await this.smtpClient.sendConfirmationMail(email, confirmationRequest, unsubscribeCode);
   }
 
   async confirmMail(email: string, hash: string) {
