@@ -41,4 +41,26 @@ If you instead wish to unsubscribe, you can do so at any time by opening the fol
     }
   }
 
+  async sendUnsubscribeMail(email: string, secret: string): Promise<void> {
+    const transport = nodemailer.createTransport({
+      host: this.host,
+      port: this.port,
+      secure: this.port === 465,
+      auth: {
+        user: this.user,
+        pass: this.password
+      }
+    });
+    const mail = await ejs.renderFile(path.join(this.templatesFolder, "requestUnsubscribeMail.ejs"), { email, secret });
+    const result = await transport.sendMail({
+      to: email,
+      from: this.sender,
+      subject: "Do you really want to unsubscribe?",
+      html: mail,
+      text: `Please confirm that you want to unsubscribe by opening the following link: https://heroesofpenta.com/unsubscribe?email=${email}&secret=${secret}`
+    });
+    if (result.rejected.length !== 0 || result.accepted.length !== 1) {
+      throw new Error(`SMTP server did not accept email!`);
+    }
+  }
 }

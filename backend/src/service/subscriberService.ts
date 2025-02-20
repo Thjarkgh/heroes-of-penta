@@ -36,6 +36,13 @@ export default class SubscriberService {
     await this.smtpClient.sendConfirmationMail(email, confirmationRequest, unsubscribeCode);
   }
 
+  async requestNewUnsubscribeMail(email: string) {
+    const subscriber = await this.repository.get(email);
+    const code = await subscriber.createUnsubscribeCode();
+    await this.repository.save(subscriber);
+    await this.smtpClient.sendUnsubscribeMail(email, code);
+  }
+
   async confirmMail(email: string, hash: string) {
     const subscriber = await this.repository.get(email);
     if (await subscriber.isValidEmailConfirmationCode(hash)) {

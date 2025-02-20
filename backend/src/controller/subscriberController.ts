@@ -67,12 +67,14 @@ export default class SubscriberController {
   async unsubscribe(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     try {
       const email = req.query.email;
-      if (!email) return void(res.status(400).send("Email is required"));
+      const secret = req.query.secret;
       if (Array.isArray(email)) return void(res.status(400).send("Only one email!"));
   
-      const unsubscribeSecret = await this.service.requestUnsubscribeCode(email.toString());
-  
-      return res.render("unsubscribe", { email, unsubscribeSecret });
+      if (!!email && !!secret) {
+        return res.render("unsubscribe", { email, secret });
+      } else {
+        return res.render("unsubscribeRequest", { email });
+      }
     }
     catch(err) {
       next(err);
