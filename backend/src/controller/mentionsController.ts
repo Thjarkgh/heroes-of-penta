@@ -27,7 +27,7 @@ export default class MentionsController {
           return;
         }
         if (secret !== this.msgSecret) {
-          console.log(`invalid secret: ${secret}`);
+          console.log(`invalid secret: ${secret} <> ${this.msgSecret}`);
           //throw new Error(`invalid secret`);
           res.sendStatus(400);
           return;
