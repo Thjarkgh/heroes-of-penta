@@ -4,8 +4,9 @@
   "description": "Server for NFT game Heroes of Penta",
   "main": "index.js",
   "scripts": {
-    "build-dev": "rimraf ./dist && tsc --build && mkdir -p ./dist/views && cp ./views/* ./dist/views",
-    "build-prod": "npm ci && npm run build-dev && rimraf ../build && mkdir -p ../build && cp package*.json ../build && cp ./dist/* ../build -r && cd ../build && npm ci --omit dev",
+    "build-core": "rimraf ./dist && tsc --build && mkdir -p ./dist/views && cp ./views/* ./dist/views && mkdir -p ./dist/static && cp ./static/* ./dist/static",
+    "build-dev": "npm run build-core",
+    "build-prod": "npm ci && npm run build-core && rimraf ../build && mkdir -p ../build && cp package*.json ../build && cp ./dist/* ../build -r && cd ../build && npm ci --omit dev",
     "test": "vitest",
     "start-dev": "node --env-file=../.env dist/index.js",
     "start-prod": "node dist/index.js"
