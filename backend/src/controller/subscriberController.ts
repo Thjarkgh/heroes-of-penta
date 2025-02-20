@@ -80,21 +80,26 @@ export default class SubscriberController {
       next(err);
     }
   }
-
+  
   async confirmUnsubscribe(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     try {
       const { email, secret } = req.body;
-      if (!email || !secret) return void(res.status(400).send("Missing parameters"));
-  
-      const success = await this.service.confirmUnsubscribe(email, secret);
-      
-      if (success) {
-          return res.render("unsubscribed");
+      if (!email) return void(res.status(400).send("Missing parameters"));
+
+      if (!secret) {
+        await this.service.requestNewUnsubscribeMail(email.toString());
+        return res.render("unsubscribeRequested");
       } else {
+        const success = await this.service.confirmUnsubscribe(email, secret);
+        
+        if (success) {
+          return res.render("unsubscribed");
+        } else {
           return void(res.status(400).send("Invalid unsubscribe request."));
+        }
       }
     }
-    catch (err) {
+    catch(err) {
       next(err);
     }
   }
