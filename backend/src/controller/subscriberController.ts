@@ -44,8 +44,8 @@ export default class SubscriberController {
     });
 
     // routes not called from frontend
-    app.get("/incompleteregistration", async (req, res, next) => res.render("requestNewConfirmationMail", { email: req.query.email }))
-    app.post("/requestnewconfirmationmail", this.requestNewConfirmationMail.bind(this))
+    app.get("/incompleteregistration", async (req, res, next) => res.render("requestNewConfirmationMail", { email: req.query.email }));
+    app.post("/requestnewconfirmationmail", this.requestNewConfirmationMail.bind(this));
     app.get('/unsubscribe', this.requestUnsubscribe.bind(this));
     app.post('/unsubscribe', this.confirmUnsubscribe.bind(this));
     app.get('/confirm', this.confirm.bind(this));
@@ -56,20 +56,20 @@ export default class SubscriberController {
       const email = req.body.email;
       if (!email) return void(res.status(400).send("Email is required"));
       if (Array.isArray(email)) return void(res.status(400).send("Only one email!"));
-      const result = await this.service.requestNewConfirmationMail(email.toString());
+      await this.service.requestNewConfirmationMail(email.toString());
       res.render("sentNewConfirmationMail");
     }
     catch (err) {
       next(err);
     }
   }
-  
+
   async requestUnsubscribe(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     try {
       const email = req.query.email;
       const secret = req.query.secret;
       if (Array.isArray(email)) return void(res.status(400).send("Only one email!"));
-  
+
       if (!!email && !!secret) {
         return res.render("unsubscribe", { email, secret });
       } else {
