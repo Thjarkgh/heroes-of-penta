@@ -34,6 +34,7 @@ const start = async () => {
   app.use('/assets', express.static(path.resolve(basepath, 'assets')));
   app.use('/index.html', express.static(path.resolve(basepath, 'index.html')));
   app.use('/privacy.html', express.static(path.resolve(__dirname, '..', 'static', 'privacy.html')));
+  app.use('/terms.html', express.static(path.resolve(__dirname, '..', 'static', 'terms.html')));
   
   //app.use('/.well-known/acme-challenge', express.static(path.resolve(basepath, '..', 'certificates', 'acme-challenge')))
   app.get('/.well-known/:folder/:file', (req, res) => {
