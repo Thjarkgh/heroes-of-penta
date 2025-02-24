@@ -13,10 +13,10 @@ export default class MentionsRepository implements IMentionRepository {
     const connection = await pool.getConnection();
     try {
       // TODO: For the future we should also handle schema updates, for now: just ensure the tables are there
-      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`mention` ( `id` bigint not null AUTO_INCREMENT PRIMARY KEY, `username` varchar(256) NOT NULL, `link` varchar(512) NOT NULL );');
+      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`mention` ( `id` bigint not null AUTO_INCREMENT PRIMARY KEY, `mediaId` varchar(256) NOT NULL, `commentId` varchar(256) NOT NULL, `timestamp` int NOT NULL );');
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
 
     return new MentionsRepository(pool, database);
@@ -25,10 +25,10 @@ export default class MentionsRepository implements IMentionRepository {
   async push(m: Mention): Promise<void> {
     const connection = await this.pool.getConnection();
     try {
-      await connection.execute('INSERT INTO `'+this.database+'`.mention` (`username`, `link`) VALUES (?, ?);', [m.user, m.link]);
+      await connection.execute('INSERT INTO `'+this.database+'`.mention` (`mediaId`, `commentId`, `timestamp`) VALUES (?, ?);', [m.mediaId, m.commentId, m.timestamp]);
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
   }
 }

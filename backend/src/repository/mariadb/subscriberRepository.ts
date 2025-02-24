@@ -19,7 +19,7 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`subscriberSecret` ( `id` bigint not null AUTO_INCREMENT PRIMARY KEY, `subscriberId` bigint NOT NULL REFERENCES `'+database+'`.`subscriber` ( `id` ), `purposeId` int NOT NULL REFERENCES `'+database+'`.`subscriberSecretPurpose` ( `id` ), `validUntil` datetime NOT NULL, `secret` char(64) NOT NULL );');
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
 
     return new SubscriberRepository(pool, database);
@@ -52,7 +52,7 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
       return Subscriber.createExisting(email, isConfirmed, secrets);
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
   }
 
@@ -64,7 +64,7 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
       return resultSets.length === 1;
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
   }
 
@@ -125,7 +125,7 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
       }
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
   }
 
@@ -140,7 +140,7 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
       return subscriber;
     }
     finally {
-      await connection.end(); 
+      await connection.release(); 
     }
   }
 
@@ -158,7 +158,7 @@ export default class SubscriberRepository implements IRepository<Subscriber, str
       }
     }
     finally {
-      await connection.end();
+      await connection.release();
     }
   }
 }
