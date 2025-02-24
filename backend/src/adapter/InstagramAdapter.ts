@@ -22,6 +22,7 @@ export default class InstagramAdapter implements IInstagramAdapter {
     formData.append('code', code);
 
     const response = await axios.post(url, formData);
+    console.log(JSON.stringify(response));
     // response.data => { access_token: ..., user_id: ... }
     return { accessToken: response.data.access_token, userId: response.data.user_id };
   }
@@ -39,6 +40,7 @@ export default class InstagramAdapter implements IInstagramAdapter {
         access_token: shortLivedToken
       }
     });
+    console.log(JSON.stringify(resp));
     // resp.data => { access_token: 'LONG_LIVED_ACCESS_TOKEN', token_type: 'bearer', expires_in: 5184000 ... }
     return { token: resp.data.access_token, expiry: new Date(Date.now() + resp.data.expires_in * 1000) };
   }
