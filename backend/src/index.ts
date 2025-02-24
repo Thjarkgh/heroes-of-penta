@@ -13,6 +13,15 @@ import MentionsRepository from "./repository/mariadb/mentionsRepository";
 import mariadb from "mariadb";
 import MentionsService from "./service/MentionsService";
 import MentionsController from "./controller/MentionsController";
+import passport from 'passport';
+import { configurePassport } from './presentation/middleware/passportJwt';
+import { AuthController } from "./presentation/controller/AuthController";
+import AuthService from "./service/AuthService";
+import { RefreshTokenRepository } from "./repository/mariadb/refreshTokenRepository";
+import { UserController } from "./presentation/controller/UserController";
+import UserService from "./service/UserService";
+import InstagramAdapter from "./adapter/InstagramAdapter";
+import UserRepository from "./repository/mariadb/userRepository";
 
 const start = async () => {
   config();
@@ -74,20 +83,48 @@ const start = async () => {
     connectionLimit: 50
   });
 
+  // Subscriber (Newsletter)
   const smtpClient = new SmtpService(smtpHost, smtpPort, smtpUser, smtpPassword, smtpSender, templatesFolder);
   const subscriberRepository = await SubscriberRepository.createWithPool(pool, database);
   const subscriberService = new SubscriberService(subscriberRepository, smtpClient);
   const subscriberController = new SubscriberController(subscriberService);
   subscriberController.setupRoutes(app);
   
+  // Index
   app.get('/', function (req, res) { res.sendFile(path.resolve(basepath, 'index.html')) });
 
+  // Mentions
   const mentionsRepository = await MentionsRepository.createWithPool(pool, database);
   const mentionsService = new MentionsService(mentionsRepository);
   const appSecret = validateDefined(process.env.INSTAGRAM_APP_SECRET);
   const msgSecret = validateDefined(process.env.INSTAGRAM_MSG_SECRET);
   const mentionsController = new MentionsController(mentionsService, appSecret, msgSecret);
   mentionsController.setupRoutes(app);
+
+  // User
+  const userInstagramAppId = validateDefined(process.env.INSTAGRAM_USER_APP_ID);
+  const userInstagramAppSecret = validateDefined(process.env.INSTAGRAM_USER_APP_SECRET);
+  const userInstagramAppRedirectUri = validateDefined(process.env.INSTAGRAM_USER_APP_REDIRECTURI);
+  const instagramAdapter = new InstagramAdapter(userInstagramAppId, userInstagramAppSecret, userInstagramAppRedirectUri);
+  const userRepo = await UserRepository.createWithPool(pool, database);
+  const userService = new UserService(userRepo, instagramAdapter);
+  const userController = new UserController(userService);
+  userController.setup(app);
+
+  // Refresh
+  const refreshTokenRepo = await RefreshTokenRepository.createWithPool(pool, database);
+  const authService = new AuthService(refreshTokenRepo);
+  const authController = new AuthController(authService);
+  authController.setup(app);
+
+  // authorized zone
+  const jwtSecret = validateDefined(process.env.JWT_SECRET);
+  configurePassport(userRepo, jwtSecret);
+  app.use(passport.initialize());
+  // app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+  //   // req.user is now set
+  //   res.json({ message: 'This is a protected resource' });
+  // });
 
   const server = http.createServer(app);
   await new Promise<void>(resolve => server.listen({ port: 4000 }, resolve));
