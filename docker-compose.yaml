@@ -52,6 +52,10 @@ services:
       - INSTAGRAM_APP_SECRET=${INSTAGRAM_APP_SECRET}
       - INSTAGRAM_MSG_SECRET=${INSTAGRAM_MSG_SECRET}
       - OPENAI_APIKEY=${OPENAI_APIKEY}
+      - INSTAGRAM_USER_APP_ID=${INSTAGRAM_USER_APP_ID}
+      - INSTAGRAM_USER_APP_SECRET=${INSTAGRAM_USER_APP_SECRET}
+      - INSTAGRAM_USER_APP_REDIRECTURI=${INSTAGRAM_USER_APP_REDIRECTURI}
+      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
     restart: on-failure:3
@@ -87,6 +91,10 @@ services:
       - INSTAGRAM_APP_SECRET=${INSTAGRAM_APP_SECRET}
       - INSTAGRAM_MSG_SECRET=${INSTAGRAM_MSG_SECRET}
       - OPENAI_APIKEY=${OPENAI_APIKEY}
+      - INSTAGRAM_USER_APP_ID=${INSTAGRAM_USER_APP_ID}
+      - INSTAGRAM_USER_APP_SECRET=${INSTAGRAM_USER_APP_SECRET}
+      - INSTAGRAM_USER_APP_REDIRECTURI=${INSTAGRAM_USER_APP_REDIRECTURI}
+      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - "/usr/local/lsws/Example/html:/home/node/app/certificates:ro"
     restart: on-failure:3
