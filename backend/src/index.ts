@@ -64,22 +64,28 @@ const start = async () => {
   // DI
 
   app.set('views', path.join(__dirname, '..', 'views'));
-  const validateDefined = (x: string | undefined) => { if (!x) { throw new Error(`not defined`); } return x; };
-  const smtpHost = validateDefined(process.env.SMTP_HOST);
-  const smtpPort = Number.parseInt(validateDefined(process.env.SMTP_PORT));
-  const smtpUser = validateDefined(process.env.SMTP_USER);
-  const smtpPassword = validateDefined(process.env.SMTP_PASSWORD);
-  const smtpSender = validateDefined(process.env.SMTP_FROM);
+  const getEnvVarOrThrow = (x: string) => {
+    const val = process.env[x];
+    if (val == undefined) {
+      throw new Error(`not defined env var: ${x}`);
+    }
+    return val;
+  };
+  const smtpHost = getEnvVarOrThrow("SMTP_HOST");
+  const smtpPort = Number.parseInt(getEnvVarOrThrow("SMTP_PORT"));
+  const smtpUser = getEnvVarOrThrow("SMTP_USER");
+  const smtpPassword = getEnvVarOrThrow("SMTP_PASSWORD");
+  const smtpSender = getEnvVarOrThrow("SMTP_FROM");
   const templatesFolder = path.join(__dirname, "..", "views");
 
-  const database = validateDefined(process.env.MYSQL_DATABASE);
+  const database = getEnvVarOrThrow("MYSQL_DATABASE");
   if (database.includes('`')) throw new Error(`database must not include ${"`"}, invalid database name ${database}`);
   const pool = mariadb.createPool({
-    host: validateDefined(process.env.MYSQL_HOST),
-    user: validateDefined(process.env.MYSQL_USER),
-    password: validateDefined(process.env.MYSQL_PASSWORD),
+    host: getEnvVarOrThrow("MYSQL_HOST"),
+    user: getEnvVarOrThrow("MYSQL_USER"),
+    password: getEnvVarOrThrow("MYSQL_PASSWORD"),
     database,
-    port: Number.parseInt(validateDefined(process.env.MYSQL_PORT)),
+    port: Number.parseInt(getEnvVarOrThrow("MYSQL_PORT")),
     connectionLimit: 50
   });
 
@@ -96,15 +102,15 @@ const start = async () => {
   // Mentions
   const mentionsRepository = await MentionsRepository.createWithPool(pool, database);
   const mentionsService = new MentionsService(mentionsRepository);
-  const appSecret = validateDefined(process.env.INSTAGRAM_APP_SECRET);
-  const msgSecret = validateDefined(process.env.INSTAGRAM_MSG_SECRET);
+  const appSecret = getEnvVarOrThrow("INSTAGRAM_APP_SECRET");
+  const msgSecret = getEnvVarOrThrow("INSTAGRAM_MSG_SECRET");
   const mentionsController = new MentionsController(mentionsService, appSecret, msgSecret);
   mentionsController.setupRoutes(app);
 
   // User
-  const userInstagramAppId = validateDefined(process.env.INSTAGRAM_USER_APP_ID);
-  const userInstagramAppSecret = validateDefined(process.env.INSTAGRAM_USER_APP_SECRET);
-  const userInstagramAppRedirectUri = validateDefined(process.env.INSTAGRAM_USER_APP_REDIRECTURI);
+  const userInstagramAppId = getEnvVarOrThrow("INSTAGRAM_USER_APP_ID");
+  const userInstagramAppSecret = getEnvVarOrThrow("INSTAGRAM_USER_APP_SECRET");
+  const userInstagramAppRedirectUri = getEnvVarOrThrow("INSTAGRAM_USER_APP_REDIRECTURI");
   const instagramAdapter = new InstagramAdapter(userInstagramAppId, userInstagramAppSecret, userInstagramAppRedirectUri);
   const userRepo = await UserRepository.createWithPool(pool, database);
   const userService = new UserService(userRepo, instagramAdapter);
@@ -118,7 +124,7 @@ const start = async () => {
   authController.setup(app);
 
   // authorized zone
-  const jwtSecret = validateDefined(process.env.JWT_SECRET);
+  const jwtSecret = getEnvVarOrThrow("JWT_SECRET");
   configurePassport(userRepo, jwtSecret);
   app.use(passport.initialize());
   // app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
