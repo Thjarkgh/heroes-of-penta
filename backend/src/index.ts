@@ -5,14 +5,14 @@ import http from "http";
 import path from 'path';
 import { getBaseDir } from "./helper/getBaseDir";
 import { config } from "dotenv";
-import SubscriberController from "./controller/subscriberController";
-import SubscriberService from "./service/subscriberService";
-import SmtpService from "./adapter/smtpService";
+import SubscriberController from "./controller/SubscriberController";
+import SubscriberService from "./service/SubscriberService";
+import SmtpService from "./adapter/SmtpService";
 import SubscriberRepository from "./repository/mariadb/subscriberRepository";
 import MentionsRepository from "./repository/mariadb/mentionsRepository";
 import mariadb from "mariadb";
-import MentionsService from "./service/mentionsService";
-import MentionsController from "./controller/mentionsController";
+import MentionsService from "./service/MentionsService";
+import MentionsController from "./controller/MentionsController";
 
 const start = async () => {
   config();

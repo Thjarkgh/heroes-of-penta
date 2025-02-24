@@ -1,7 +1,7 @@
 import { Express } from "express";
 import XHubVerifier from "../helper/xHubVerifier";
 import verifyXHubSignature from "../helper/xHubMiddleware";
-import MentionsService, { mentionData } from "../service/mentionsService";
+import MentionsService, { mentionData } from "../service/MentionsService";
 
 export default class MentionsController {
   private readonly verifier: XHubVerifier;
@@ -43,7 +43,7 @@ export default class MentionsController {
     app.post('/webhooks/instagram', async (req, res, next) => { console.log(JSON.stringify(req.body)); next(); }, verifyXHubSignature(this.appSecret),  async (req, res, next): Promise<void> => {
       try {
         const data = await mentionData.parseAsync(req.body, { async: true });
-        await this.service.add(data);
+        await this.service.handle(data);
       }
       catch (err) {
         next(err);

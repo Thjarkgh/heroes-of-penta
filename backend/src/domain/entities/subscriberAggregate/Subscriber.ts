@@ -1,4 +1,4 @@
-import SubscriberSecret from "./subscriberSecret";
+import SubscriberSecret from "./SubscriberSecret";
 
 const confirmationPurpose = "confirm";
 const unsubscribePurpose = "unsubscribe";

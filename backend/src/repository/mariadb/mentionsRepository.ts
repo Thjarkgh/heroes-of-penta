@@ -1,6 +1,6 @@
 import IMentionRepository from "../../service/IMentionRepository";
 import mariadb from "mariadb";
-import Mention from "../../domain/entities/mentionAggregate/mention";
+import Mention from "../../domain/entities/mentionAggregate/Mention";
 
 export default class MentionsRepository implements IMentionRepository {
   private constructor(

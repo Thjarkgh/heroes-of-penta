@@ -1,7 +1,7 @@
-import Subscriber from "../../domain/entities/subscriberAggregate/subscriber";
+import Subscriber from "../../domain/entities/subscriberAggregate/Subscriber";
 import IRepository from "../../IRepository";
 import mariadb from "mariadb";
-import SubscriberSecret from "../../domain/entities/subscriberAggregate/subscriberSecret";
+import SubscriberSecret from "../../domain/entities/subscriberAggregate/SubscriberSecret";
 
 export default class SubscriberRepository implements IRepository<Subscriber, string> {
   private constructor(
