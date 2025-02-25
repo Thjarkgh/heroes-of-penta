@@ -22,6 +22,10 @@ import { UserController } from "./presentation/controller/UserController";
 import UserService from "./service/UserService";
 import InstagramAuthAdapter from "./adapter/InstagramAuthAdapter";
 import UserRepository from "./repository/mariadb/userRepository";
+import TrainerRepository from "./repository/mariadb/trainerRepository";
+import OpenAiAdapter from "./adapter/OpenAiAdapter";
+import InstagramMessageAdapter from "./adapter/InstagramMessageAdapter";
+import { readFileSync } from "fs";
 
 const start = async () => {
   config();
@@ -99,13 +103,6 @@ const start = async () => {
   // Index
   app.get('/', function (req, res) { res.sendFile(path.resolve(basepath, 'index.html')) });
 
-  // Mentions
-  const mentionsRepository = await MentionsRepository.createWithPool(pool, database);
-  const mentionsService = new MentionsService(mentionsRepository);
-  const appSecret = getEnvVarOrThrow("INSTAGRAM_APP_SECRET");
-  const msgSecret = getEnvVarOrThrow("INSTAGRAM_MSG_SECRET");
-  const mentionsController = new MentionsController(mentionsService, appSecret, msgSecret);
-  mentionsController.setupRoutes(app);
 
   // User
   const userInstagramAppId = getEnvVarOrThrow("INSTAGRAM_USER_APP_ID");
@@ -116,6 +113,18 @@ const start = async () => {
   const userService = new UserService(userRepo, instagramAdapter);
   const userController = new UserController(userService);
   userController.setup(app);
+
+  // Mentions
+  //const mentionsRepository = await MentionsRepository.createWithPool(pool, database);
+  const trainerRepo = await TrainerRepository.createWithPool(pool, database);
+  const openAI = OpenAiAdapter.build(getEnvVarOrThrow("OPENAI_API_KEY"));
+  const instagramMessenger = new InstagramMessageAdapter(getEnvVarOrThrow("INSTAGRAM_USER_ID"), getEnvVarOrThrow("INSTAGRAM_USER_TOKEN"));
+  const query = readFileSync(getEnvVarOrThrow("QUERY_FILE_PATH"), "utf8");
+  const mentionsService = new MentionsService(trainerRepo, userRepo, openAI, instagramMessenger, query);
+  const appSecret = getEnvVarOrThrow("INSTAGRAM_APP_SECRET");
+  const msgSecret = getEnvVarOrThrow("INSTAGRAM_MSG_SECRET");
+  const mentionsController = new MentionsController(mentionsService, appSecret, msgSecret);
+  mentionsController.setupRoutes(app);
 
   // Refresh
   const refreshTokenRepo = await RefreshTokenRepository.createWithPool(pool, database);
