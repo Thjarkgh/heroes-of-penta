@@ -14,7 +14,7 @@ export default class InstagramAdapter implements IInstagramAdapter {
   async exchangeShortLivedToken(code: string): Promise<ExchangeShortLivedTokenResult> {
     // const { code, clientId, clientSecret, redirectUri } = props;
     const url = 'https://api.instagram.com/oauth/access_token';
-    const formData = new URLSearchParams();
+    const formData = new FormData();
     formData.append('client_id', this.appId);
     formData.append('client_secret', this.appSecret);
     formData.append('grant_type', 'authorization_code');
@@ -22,7 +22,7 @@ export default class InstagramAdapter implements IInstagramAdapter {
     formData.append('code', code);
     console.log(formData.toString());
 
-    const response = await axios.post(url, formData);
+    const response = await axios.post(url, formData, { headers: { "Content-Type": "multipart/form-data" }});
     console.log(JSON.stringify(response));
     // response.data => { access_token: ..., user_id: ... }
     return { accessToken: response.data.access_token, userId: response.data.user_id };
