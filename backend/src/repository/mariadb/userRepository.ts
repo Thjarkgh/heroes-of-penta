@@ -119,10 +119,10 @@ export default class UserRepository implements IUserRepository {
       const dirtyInstagramAccounts = user.instagramAccounts.filter((ia) => existing.instagramAccounts.find((eia) => eia.id === ia.id && (eia.longLivedToken !== ia.longLivedToken || eia.expiry !== ia.expiry)));
 
       if (missingWallets.length > 0) {
-        await connection.query('INSERT INTO `'+this.database+'`.`wallet` (`userId`, `address`) VALUES (?, ?);', missingWallets.map((w) => [user.id, w.address]));
+        await connection.batch('INSERT INTO `'+this.database+'`.`wallet` (`userId`, `address`) VALUES (?, ?);', missingWallets.map((w) => [user.id, w.address]));
       }
       if (missingInstagramAccounts.length > 0) {
-        await connection.query(
+        await connection.batch(
           'INSERT INTO `'+this.database+'`.`instagramAccount` (`userId`, `instagramUserId`, `token`, `expiry`) VALUES (?, ?, ?, ?);',
           missingInstagramAccounts.map((a) => [user.id, a.id, a.longLivedToken, a.expiry])
         );
