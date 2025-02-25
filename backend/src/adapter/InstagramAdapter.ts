@@ -20,6 +20,7 @@ export default class InstagramAdapter implements IInstagramAdapter {
     formData.append('grant_type', 'authorization_code');
     formData.append('redirect_uri', this.redirectUri);
     formData.append('code', code);
+    console.log(formData.toString());
 
     const response = await axios.post(url, formData);
     console.log(JSON.stringify(response));
