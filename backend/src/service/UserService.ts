@@ -1,10 +1,10 @@
 import IUserRepository from '../domain/entities/userAggregate/IUserRepository';
-import IInstagramAdapter from './IInstagramAdapter';
+import IInstagramAuthAdapter from './IInstagramAuthAdapter';
 
 export default class UserService {
   constructor(
     private readonly userRepo: IUserRepository,
-    private readonly instagram: IInstagramAdapter
+    private readonly instagram: IInstagramAuthAdapter
   ) {}
   
   async handleInstagramCallbackCode(code: string) {
@@ -17,8 +17,10 @@ export default class UserService {
     code = code.replace('#_', '');
 
     const shortLivedTokenResult = await this.instagram.exchangeShortLivedToken(code);
+    console.log(JSON.stringify(shortLivedTokenResult));
 
     const longLivedTokenResult = await this.instagram.exchangeLongLivedToken(shortLivedTokenResult.accessToken);
+    console.log(JSON.stringify(longLivedTokenResult));
 
     // Now decide if we are "registering" or "logging in".
     const existing = await this.userRepo.findByInstagramId(shortLivedTokenResult.userId);

@@ -1,7 +1,7 @@
 import axios from 'axios';
-import IInstagramAdapter, { ExchangeLongLivedTokenResult, ExchangeShortLivedTokenResult } from '../service/IInstagramAdapter';
+import IInstagramAuthAdapter, { ExchangeLongLivedTokenResult, ExchangeShortLivedTokenResult } from '../service/IInstagramAuthAdapter';
 
-export default class InstagramAdapter implements IInstagramAdapter {
+export default class InstagramAuthAdapter implements IInstagramAuthAdapter {
   constructor(
     private readonly appId: string,
     private readonly appSecret: string,
@@ -22,8 +22,6 @@ export default class InstagramAdapter implements IInstagramAdapter {
     formData.append('code', code);
 
     const response = await axios.post(url, formData, { headers: { "Content-Type": "multipart/form-data" }});
-    console.log(JSON.stringify(response.data));
-    // response.data => { access_token: ..., user_id: ... }
     return { accessToken: response.data.access_token, userId: response.data.user_id };
   }
 
@@ -40,8 +38,6 @@ export default class InstagramAdapter implements IInstagramAdapter {
         access_token: shortLivedToken
       }
     });
-    console.log(JSON.stringify(resp.data));
-    // resp.data => { access_token: 'LONG_LIVED_ACCESS_TOKEN', token_type: 'bearer', expires_in: 5184000 ... }
     return { token: resp.data.access_token, expiry: new Date(Date.now() + resp.data.expires_in * 1000) };
   }
 }

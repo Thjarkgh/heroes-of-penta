@@ -20,7 +20,7 @@ import AuthService from "./service/AuthService";
 import { RefreshTokenRepository } from "./repository/mariadb/refreshTokenRepository";
 import { UserController } from "./presentation/controller/UserController";
 import UserService from "./service/UserService";
-import InstagramAdapter from "./adapter/InstagramAdapter";
+import InstagramAuthAdapter from "./adapter/InstagramAuthAdapter";
 import UserRepository from "./repository/mariadb/userRepository";
 
 const start = async () => {
@@ -111,7 +111,7 @@ const start = async () => {
   const userInstagramAppId = getEnvVarOrThrow("INSTAGRAM_USER_APP_ID");
   const userInstagramAppSecret = getEnvVarOrThrow("INSTAGRAM_USER_APP_SECRET");
   const userInstagramAppRedirectUri = getEnvVarOrThrow("INSTAGRAM_USER_APP_REDIRECTURI");
-  const instagramAdapter = new InstagramAdapter(userInstagramAppId, userInstagramAppSecret, userInstagramAppRedirectUri);
+  const instagramAdapter = new InstagramAuthAdapter(userInstagramAppId, userInstagramAppSecret, userInstagramAppRedirectUri);
   const userRepo = await UserRepository.createWithPool(pool, database);
   const userService = new UserService(userRepo, instagramAdapter);
   const userController = new UserController(userService);

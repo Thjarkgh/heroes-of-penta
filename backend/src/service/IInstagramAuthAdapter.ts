@@ -8,7 +8,7 @@ export interface ExchangeLongLivedTokenResult {
   expiry: Date
 }
 
-export default interface IInstagramAdapter {
+export default interface IInstagramAuthAdapter {
   exchangeShortLivedToken(code: string): Promise<ExchangeShortLivedTokenResult>;
   exchangeLongLivedToken(shortLivedToken: string): Promise<ExchangeLongLivedTokenResult>;
 }
