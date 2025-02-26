@@ -47,5 +47,6 @@ RUN npm ci --omit dev
 
 COPY --from=build --chown=node:node /home/node/app/www /home/node/app/www
 COPY --from=build --chown=node:node /home/node/app/build /home/node/app/build
+COPY --from=build --chown=node:node /home/node/app/query.txt /home/node/app/query.txt
 
 ENTRYPOINT [ "node", "/home/node/app/build/index.js"  ]
