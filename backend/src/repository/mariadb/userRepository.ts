@@ -16,7 +16,7 @@ export default class UserRepository implements IUserRepository {
     try {
       // TODO: For the future we should also handle schema updates, for now: just ensure the tables are there
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`user` ( `id` int not null AUTO_INCREMENT PRIMARY KEY, `acceptedTermsOnce` bit not null, `acceptedTerms` bit not null, `acceptedPrivacyOnce` bit not null, `acceptedPrivacy` bit not null );');
-      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`instagramAccount` ( `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY, `userId` int not null REFERENCES `'+database+'`.`user` ( `id` ), `instagramUserId` varchar(128) NOT NULL UNIQUE, `token` varchar(128) null, `expiry` datetime null );');
+      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`instagramAccount` ( `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY, `userId` int not null REFERENCES `'+database+'`.`user` ( `id` ), `instagramUserId` varchar(128) NOT NULL UNIQUE, `token` varchar(512) null, `expiry` datetime null );');
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`wallet` ( `id` int not null AUTO_INCREMENT PRIMARY KEY, `userId` int NOT NULL REFERENCES `'+database+'`.`user` ( `id` ), `address` char(42) NOT NULL );');
     }
     finally {

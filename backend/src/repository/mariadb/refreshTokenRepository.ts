@@ -13,7 +13,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     const connection = await pool.getConnection();
     try {
       // TODO: For the future we should also handle schema updates, for now: just ensure the tables are thereCREATE TABLE refresh_tokens (
-      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`refreshToken` ( `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `token` varchar(255) NOT NULL UNIQUE, `revoked` bit DEFAULT 0, `expiresAt` datetime NOT NULL, `userId` int NOT NULL REFERENCES `'+database+'`.`user` ( `id` ) );');
+      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`refreshToken` ( `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `token` varchar(512) NOT NULL UNIQUE, `revoked` bit DEFAULT 0, `expiresAt` datetime NOT NULL, `userId` int NOT NULL REFERENCES `'+database+'`.`user` ( `id` ) );');
     }
     finally {
       await connection.release();
