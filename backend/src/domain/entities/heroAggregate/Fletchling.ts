@@ -1,6 +1,6 @@
 export default class Fletchling {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     private _xp: number,
     private _disposition: Map<string, number>
   ) {}
