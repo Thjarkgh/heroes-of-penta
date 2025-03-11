@@ -1,0 +1,44 @@
+[versions]
+agp = "8.8.2"
+androidBom = "1.0.0"
+ethersBom = "1.3.0"
+glideVersion = "4.16.0"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.27"
+abigen = "1.3.0"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+constraintlayout = "2.2.1"
+cameraView = "1.4.1"
+retrofit = "2.11.0"
+
+[libraries]
+android-bom = { module = "com.reown:android-bom", version.ref = "androidBom" }
+android-core = { module = "com.reown:android-core", version = "androidBom" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+appkit = { module = "com.reown:appkit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+ethers-abi = { module = "io.kriptal.ethers:ethers-abi" }
+ethers-bom = { module = "io.kriptal.ethers:ethers-bom", version.ref = "ethersBom" }
+ethers-core = { module = "io.kriptal.ethers:ethers-core" }
+ethers-providers = { module = "io.kriptal.ethers:ethers-providers" }
+ethers-signers = { module = "io.kriptal.ethers:ethers-signers" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

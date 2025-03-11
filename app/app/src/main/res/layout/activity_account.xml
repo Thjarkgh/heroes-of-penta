@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/layoutAccount"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:gravity="center"
+android:orientation="vertical"
+android:padding="16dp">
+
+<!-- User Name -->
+  <EditText
+    android:id="@+id/editUserName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:autofillHints="Username"
+    android:hint="Username"
+    android:inputType="text"
+    android:minHeight="48dp" />
+
+  <!-- Save Name Button -->
+<Button
+    android:id="@+id/btnSaveUserName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Save Username" />
+
+<!-- Connect Metamask Button -->
+  <com.reown.appkit.ui.components.button.views.ConnectButton
+    android:id="@+id/btnConnectMetamask"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:visibility="visible"
+    app:connect_button_size="NORMAL"
+    tools:visibility="visible" />
+<!-- <Button
+    android:id="@+id/btnConnectMetamask"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Connect Metamask" /> -->
+
+<!-- Disconnect Metamask Button -->
+
+  <!-- Delete Account Button -->
+
+  <Button
+    android:id="@+id/btnDisconnectMetamask"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Disconnect Metamask" />
+
+  <Button
+    android:id="@+id/btnDeleteAccount"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:text="Delete Account" />
+
+</LinearLayout>
