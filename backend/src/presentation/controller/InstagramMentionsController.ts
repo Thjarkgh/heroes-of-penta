@@ -1,9 +1,9 @@
 import { Express } from "express";
-import XHubVerifier from "../helper/xHubVerifier";
-import verifyXHubSignature from "../helper/xHubMiddleware";
-import MentionsService, { mentionData } from "../service/MentionsService";
+import XHubVerifier from "../../helper/xHubVerifier";
+import verifyXHubSignature from "../../helper/xHubMiddleware";
+import MentionsService, { mentionData } from "../../service/MentionsService";
 
-export default class MentionsController {
+export default class InstagramMentionsController {
   private readonly verifier: XHubVerifier;
 
   constructor(

@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import SubscriberService from "../service/SubscriberService";
+import SubscriberService from "../../service/SubscriberService";
 
 export default class SubscriberController {
   constructor(
