@@ -5,14 +5,14 @@ import http from "http";
 import path from 'path';
 import { getBaseDir } from "./helper/getBaseDir";
 import { config } from "dotenv";
-import SubscriberController from "./controller/SubscriberController";
+import SubscriberController from "./presentation/controller/SubscriberController";
 import SubscriberService from "./service/SubscriberService";
 import SmtpService from "./adapter/SmtpService";
 import SubscriberRepository from "./repository/mariadb/subscriberRepository";
 import MentionsRepository from "./repository/mariadb/mentionsRepository";
 import mariadb from "mariadb";
 import MentionsService from "./service/MentionsService";
-import MentionsController from "./controller/MentionsController";
+import InstagramMentionsController from "./presentation/controller/InstagramMentionsController";
 import passport from 'passport';
 import { configurePassport } from './presentation/middleware/passportJwt';
 import { AuthController } from "./presentation/controller/AuthController";
@@ -123,7 +123,7 @@ const start = async () => {
   const mentionsService = new MentionsService(trainerRepo, userRepo, openAI, instagramMessenger, query);
   const appSecret = getEnvVarOrThrow("INSTAGRAM_APP_SECRET");
   const msgSecret = getEnvVarOrThrow("INSTAGRAM_MSG_SECRET");
-  const mentionsController = new MentionsController(mentionsService, appSecret, msgSecret);
+  const mentionsController = new InstagramMentionsController(mentionsService, appSecret, msgSecret);
   mentionsController.setupRoutes(app);
 
   // Refresh
