@@ -7,13 +7,13 @@ dotenv.config();
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.28", //9
+    version: "0.8.23", //9
     settings: {
       optimizer: {
         enabled: true,
         runs: 200,
       },
-      evmVersion: "london"
+      evmVersion: "shanghai"
     }
   },
   networks: {

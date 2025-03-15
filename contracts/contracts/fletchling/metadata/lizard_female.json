@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreig62toqzxgsyfsgcespsdvdjjgph4ppsjpfvr35w7f3d77ujbvxye",
+  "description": "Female Xlizth fletchling eager to go out and discover new wonders.",
+  "external_url": "https://heroesofpenta.com/fletchlings/4",
+  "name": "Female Xlizth fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "female"
+    },
+    {
+      "trait_type": "species",
+      "value": "Xlizth"
+    }
+  ]
+}

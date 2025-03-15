@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreiav6vqocxhuehnjlgtspqdb5re5evov44ebjuocf6ifxenztpjugm",
+  "description": "Female Szarrágx fletchling eager to go out and find new challenges.",
+  "external_url": "https://heroesofpenta.com/fletchlings/2",
+  "name": "Female Szarrágx fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "female"
+    },
+    {
+      "trait_type": "species",
+      "value": "Szarrágx"
+    }
+  ]
+}

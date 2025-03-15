@@ -7,8 +7,10 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
     "clean": "npx hardhat clean",
-    "deploy:hh": "npx hardhat ignition deploy --network localhost ignition/modules/AccountRegistry.ts",
-    "deploy:scrollTestnet": "npx hardhat ignition deploy --network scrollTestnet ignition/modules/AccountRegistry.ts"
+    "deploy-accountregistry:hh": "npx hardhat ignition deploy --network localhost ignition/modules/AccountRegistry.ts",
+    "deploy-accountregistry:scrollTestnet": "npx hardhat ignition deploy --network scrollTestnet ignition/modules/AccountRegistry.ts",
+    "deploy-fletchlingnft:hh": "npx hardhat ignition deploy --network localhost ignition/modules/FletchlingNFT.ts",
+    "deploy-fletchlingnft:scrollTestnet": "npx hardhat ignition deploy --network scrollTestnet ignition/modules/FletchlingNFT.ts --reset"
   },
   "author": "Thjarkgh",
   "license": "MIT",
@@ -17,6 +19,7 @@
     "hardhat": "^2.22.19"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.2.0",
     "dotenv": "^16.4.7"
   }
 }

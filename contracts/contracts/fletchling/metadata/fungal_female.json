@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreibbfyvzw54agnkuja5cz7lqh4xdosj37eo5esg7idfudx53pa4w6y",
+  "description": "Female Ch'tålh fletchling eager to go out and grow her colony.",
+  "external_url": "https://heroesofpenta.com/fletchlings/0",
+  "name": "Female Ch'tålh fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "female"
+    },
+    {
+      "trait_type": "species",
+      "value": "Ch'tålh"
+    }
+  ]
+}

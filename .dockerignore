@@ -4,3 +4,5 @@ build
 deploy
 www
 node_modules
+app
+contracts

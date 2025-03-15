@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreifoc3tuf3mvjfqlni2ottp3b2rwfvvqekttkxhqa52auewpvlvcey",
+  "description": "Male Minotaur fletchling eager to go out and conquer the world.",
+  "external_url": "https://heroesofpenta.com/fletchlings/7",
+  "name": "Male Minotaur fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "male"
+    },
+    {
+      "trait_type": "species",
+      "value": "Minotaur"
+    }
+  ]
+}

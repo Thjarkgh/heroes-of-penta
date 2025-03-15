@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity 0.8.23;
 
 contract AccountRegistry {
     
@@ -84,11 +84,11 @@ contract AccountRegistry {
         }
     }
 
-    // function getWalletCooldown() external view returns (uint) {
-    //     if (block.timestamp >= addressToWalletInfo[msg.sender].lastUpdated + ONE_WEEK) {
-    //         return 0;
-    //     } else {
-    //         return addressToWalletInfo[msg.sender].lastUpdated + ONE_WEEK - block.timestamp;
-    //     }
-    // }
+    function getWalletCooldown() external view returns (uint) {
+        if (block.timestamp >= addressToWalletInfo[msg.sender].lastUpdated + ONE_WEEK) {
+            return 0;
+        } else {
+            return addressToWalletInfo[msg.sender].lastUpdated + ONE_WEEK - block.timestamp;
+        }
+    }
 }

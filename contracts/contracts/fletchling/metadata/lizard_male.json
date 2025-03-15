@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreiafosysdwhunjf7yzmg4zw44i3qzmtzlc6yazpwmnlx3emb5pye6e",
+  "description": "Male Xlizth fletchling eager to go out and discover new wonders.",
+  "external_url": "https://heroesofpenta.com/fletchlings/5",
+  "name": "Male Xlizth fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "male"
+    },
+    {
+      "trait_type": "species",
+      "value": "Xlizth"
+    }
+  ]
+}

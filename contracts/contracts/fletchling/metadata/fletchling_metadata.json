@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "xp": {
+      "displayName": "XP",
+      "dataType": {
+        "type": "decimal",
+        "signed": false,
+        "decimals": 0
+      }
+    },
+    "name": {
+      "displayName": "Name",
+      "dataType": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32,
+        "valueMappings": {
+          "0x0000000000000000000000000000000000000000000000000000000000000000": "Nameless"
+        }
+      },
+      "tokenOwnerCanUpdateValue": true
+    }
+  }
+}

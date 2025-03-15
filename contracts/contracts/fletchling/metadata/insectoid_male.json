@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreietcmg56h6absxzrnoer66vpy5ed7mxar2acwuffmktpthlciwooe",
+  "description": "Male Szarrágx fletchling eager to go out and find new challenges.",
+  "external_url": "https://heroesofpenta.com/fletchlings/3",
+  "name": "Male Szarrágx fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "male"
+    },
+    {
+      "trait_type": "species",
+      "value": "Szarrágx"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreiewrjxdbmglhl2vukjrabdhviq2funkvllvqlcvrjzfk2swodyqd4",
+  "description": "Female Minotaur fletchling eager to go out and conquer the world.",
+  "external_url": "https://heroesofpenta.com/fletchlings/6",
+  "name": "Female Minotaur fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "female"
+    },
+    {
+      "trait_type": "species",
+      "value": "Minotaur"
+    }
+  ]
+}

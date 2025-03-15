@@ -1,0 +1,16 @@
+{
+  "image": "ipfs://bafkreia432nds6m3butdnjhleiwj537ip6z6nrjevfosa3mznpo46lhcei",
+  "description": "Female Xlørn fletchling eager to go out and meet new people.",
+  "external_url": "https://heroesofpenta.com/fletchlings/8",
+  "name": "Female Xlørn fletchling",
+  "attributes": [
+    {
+      "trait_type": "gender",
+      "value": "female"
+    },
+    {
+      "trait_type": "species",
+      "value": "Xlørn"
+    }
+  ]
+}
