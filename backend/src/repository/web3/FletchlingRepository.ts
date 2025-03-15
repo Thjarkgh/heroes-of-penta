@@ -1,4 +1,4 @@
-import { ethers } from "ethers"
+import { BytesLike, encodeBytes32String, ethers } from "ethers"
 import Wallet from "../../domain/entities/walletAggregate/Wallet";
 import IFletchlingRepository from "../../service/IFletchlingRepository";
 import Fletchling from "../../domain/entities/heroAggregate/Fletchling";
@@ -106,20 +106,22 @@ export default class FletchlingRepository implements IFletchlingRepository {
   async getFletchlingsOfWallet(wallet: string) {
     const count = await this.contract.balanceOf(wallet);
 
-    const result = []
+    const result = [] as Fletchling[];
     for (let i = 0; i < count; ++i) {
-      const fletchlingId = await this.contract.tokenOfOwnerByIndex(wallet, i);
-      const fletchlingCid = await this.contract.tokenURI(fletchlingId);
+      const fletchlingId: bigint = await this.contract.tokenOfOwnerByIndex(wallet, i);
+      const fletchlingCid: string = await this.contract.tokenURI(fletchlingId);
       // TODO: Cache!
-      const fletchlingInfo = await (await fetch(fletchlingCid)).json();
+      const fletchlingCidUrl = `https://ipfs.io/ipfs/${fletchlingCid.substring(7)}`;
+      const fletchlingInfoRaw = await fetch(fletchlingCidUrl);
+      const fletchlingInfo: { description: string, image: string } = await fletchlingInfoRaw.json();
       const nameKey = await this.contract.NAME_KEY();
       const xpKey = await this.contract.XP_KEY();
-      const dynValues = await this.contract.getTraitValues(fletchlingId, [nameKey, xpKey]);
+      const dynValues: string[] = await this.contract.getTraitValues(fletchlingId, [nameKey, xpKey]);
       result.push({
-        id: fletchlingId,
-        name: dynValues[0],
+        id: Number.parseInt(fletchlingId.toString(10), 10),
+        name: dynValues[0] === "0x0000000000000000000000000000000000000000000000000000000000000000" ? "Nameless" : ethers.decodeBytes32String(dynValues[0]),
         description: fletchlingInfo.description,
-        xp: dynValues[1],
+        xp: Number.parseInt(dynValues[1], 16),
         imageUrl: fletchlingInfo.image
       });
     }

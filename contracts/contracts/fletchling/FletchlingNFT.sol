@@ -74,16 +74,16 @@ contract FletchlingNFT is ERC721Enumerable, ERC2981, IERC7496, IERC7572, IERC490
         _traitMetadataURI = "ipfs://bafkreidrgaanenvuppqwek7konyvwt24bsb2x63slrptdytmubjsx666ae";
 
         // Initialize species CIDs
-        _speciesPictureCIDs[0].push("ipfs://bafkreibbfyvzw54agnkuja5cz7lqh4xdosj37eo5esg7idfudx53pa4w6y");
+        _speciesPictureCIDs[0].push("ipfs://bafkreibi4p37bfy2xlcncgcqbo5njwj665dan7tbrg5ls67vegdysojqea");
         _speciesPictureCIDs[0].push("ipfs://bafkreidvxhkhx5dretqxmumbk3alfxwe2yvraqz6kkistxvwdvojt2l4ty");
-        _speciesPictureCIDs[1].push("ipfs://bafkreiav6vqocxhuehnjlgtspqdb5re5evov44ebjuocf6ifxenztpjugm");
-        _speciesPictureCIDs[1].push("ipfs://bafkreietcmg56h6absxzrnoer66vpy5ed7mxar2acwuffmktpthlciwooe");
-        _speciesPictureCIDs[2].push("ipfs://bafkreig62toqzxgsyfsgcespsdvdjjgph4ppsjpfvr35w7f3d77ujbvxye");
-        _speciesPictureCIDs[2].push("ipfs://bafkreiafosysdwhunjf7yzmg4zw44i3qzmtzlc6yazpwmnlx3emb5pye6e");
-        _speciesPictureCIDs[3].push("ipfs://bafkreiewrjxdbmglhl2vukjrabdhviq2funkvllvqlcvrjzfk2swodyqd4");
-        _speciesPictureCIDs[3].push("ipfs://bafkreifoc3tuf3mvjfqlni2ottp3b2rwfvvqekttkxhqa52auewpvlvcey");
-        _speciesPictureCIDs[4].push("ipfs://bafkreia432nds6m3butdnjhleiwj537ip6z6nrjevfosa3mznpo46lhcei");
-        _speciesPictureCIDs[4].push("ipfs://bafkreiffeoexwlakmunfds2wys47cr2s6uz6jc3xhmy5wve2trl4pqgpdq");
+        _speciesPictureCIDs[1].push("ipfs://bafkreid6ltt245oxxifvbpn4hct5uzabr4dljblsbwrfj2yp7f4raailjq");
+        _speciesPictureCIDs[1].push("ipfs://bafkreibjlv5irusig33odtj3xcjfionbvcjgf6ld75dv63hesodklsbdqi");
+        _speciesPictureCIDs[2].push("ipfs://bafkreia2hokasxpof4b7agetcadtqozouexhsysuf2mrtrdq7rll2niopy");
+        _speciesPictureCIDs[2].push("ipfs://bafkreifixdiert6zjcwbakvzrpvxpn2rre26nni3xjstvdojztqq5doreq");
+        _speciesPictureCIDs[3].push("ipfs://bafkreiflofzavibsuxbfnr3wsodldtp34j6bqgu4re72lwe62ftvx6252i");
+        _speciesPictureCIDs[3].push("ipfs://bafkreifiaq7kh3eyqwku4vjwp2hjbnu36kswfktcv57663cyjhbt27kgnm");
+        _speciesPictureCIDs[4].push("ipfs://bafkreiawijh2r6v4zo24t6zowbked3pcbwxarzmtexlqvi6y6ni43bppdq");
+        _speciesPictureCIDs[4].push("ipfs://bafkreidfxhatcqsztplfpadn623pw7c3kp4ifshsly4oksfvyptwjav3f4");
 
         _setDefaultRoyalty(xpDistributor, 500);
         emit TraitMetadataURIUpdated();
@@ -140,6 +140,9 @@ contract FletchlingNFT is ERC721Enumerable, ERC2981, IERC7496, IERC7572, IERC490
         // Revert if the token doesn't exist.
         _requireOwned(tokenId);
 
+        // Allocate memory array with the same length as traitKeys
+        traitValues = new bytes32[](traitKeys.length);
+        
         for (uint i = 0; i < traitKeys.length; i++) {
             if (traitKeys[i] == NAME_KEY) {
                 traitValues[i] = _names[tokenId];
