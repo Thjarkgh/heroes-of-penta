@@ -26,7 +26,7 @@ export default class TrainingController {
   private async handleTrainingSubmission(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
-        res.status(400).send("Not logged in");
+        res.status(401).send("Not logged in");
         return;
       }
       const data = req.file?.buffer;

@@ -21,7 +21,7 @@ export class UserController {
     try {
       const user = req.user;
       if (!user) {
-        res.status(400).send('Not logged in');
+        res.status(401).send('Not logged in');
       } else {
         const result = await this.userService.getNftHeroesOfUser((user as User).id);
         res.json(result);
@@ -34,7 +34,7 @@ export class UserController {
     try {
       const user = req.user;
       if (!user) {
-        res.status(400).send('Not logged in');
+        res.status(401).send('Not logged in');
       } else {
         const id = req.query.id;
         if (id == undefined) {
@@ -53,7 +53,7 @@ export class UserController {
     try {
       const user = req.user;
       if (!user) {
-        res.status(400).send('Not logged in');
+        res.status(401).send('Not logged in');
       } else {
         const result = await this.userService.getUser((user as User).id);
         res.json(result);

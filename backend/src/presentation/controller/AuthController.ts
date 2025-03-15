@@ -48,7 +48,7 @@ export class AuthController {
       // need to put tiktok
       const userId = req.body.userId;
       if (!userId) {
-        res.status(400).json({ error: 'No userId' });
+        res.status(401).json({ error: 'No userId' });
         return;
       }
       const { accessToken, refreshToken } = await this.authService.generateTokens(userId);
@@ -65,7 +65,7 @@ export class AuthController {
     try {
       const oldRefreshToken = req.cookies['refresh_token'];
       if (!oldRefreshToken) {
-        res.status(401).json({ error: 'Missing refresh token' });
+        res.status(400).json({ error: 'Missing refresh token' });
         return;
       }
       // Rotate the token
@@ -73,7 +73,7 @@ export class AuthController {
       this.setRefreshTokenCookie(res, refreshToken);
       res.json({ accessToken });
     } catch (error: any) {
-      res.status(401).json({ error: 'Refresh token invalid or expired' });
+      res.status(400).json({ error: 'Refresh token invalid or expired' });
     }
   }
 
