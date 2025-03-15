@@ -135,7 +135,7 @@ export default class FletchlingRepository implements IFletchlingRepository {
       name: dynValues[0] === "0x0000000000000000000000000000000000000000000000000000000000000000" ? "Nameless" : ethers.decodeBytes32String(dynValues[0]),
       description: fletchlingInfo.description,
       xp: Number.parseInt(dynValues[1], 16),
-      imageUrl: fletchlingInfo.image
+      imageUrl: `https://ipfs.io/ipfs/${fletchlingInfo.image.substring(7)}`
     };
   }
 }
