@@ -1,9 +1,11 @@
 package com.heroesofpenta.data.web3
 
+import android.widget.Toast
 import com.heroesofpenta.data.repository.MainRepository
 import com.reown.appkit.client.AppKit
 import com.reown.appkit.client.Modal
 import com.reown.appkit.client.models.request.Request
+import kotlinx.coroutines.currentCoroutineContext
 
 object WalletDelegate : AppKit.ModalDelegate {
   private const val CONTRACT_ADDRESS = "17c859A939591c293375AC23307dbe868b387c84"
@@ -19,32 +21,37 @@ object WalletDelegate : AppKit.ModalDelegate {
         val userWalletAddress = AppKit.getAccount()?.address
 
         if (userWalletAddress != null) {
-          MainRepository.getUser { user ->
-            if (user != null) {
-              val argumentsLength = "1".padStart(length = 64, padChar = '0')
-              val accountId = user.id.toHexString().padStart(length = 64, padChar = '0')
-              val data = "0x$REGISTER_ACCOUNT_CODE$argumentsLength$accountId"
-              val requestParams = Request(
-                method = "eth_sendTransaction", // 0x17c859A939591c293375AC23307dbe868b387c84
-                params = "{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"data\":\"$data\"}"
-              )
+          MainRepository.getUser(
+            { user ->
+              if (user != null) {
+                val argumentsLength = "1".padStart(length = 64, padChar = '0')
+                val accountId = user.id.toHexString().padStart(length = 64, padChar = '0')
+                val data = "0x$REGISTER_ACCOUNT_CODE$argumentsLength$accountId"
+                val requestParams = Request(
+                  method = "eth_sendTransaction", // 0x17c859A939591c293375AC23307dbe868b387c84
+                  params = "{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"data\":\"$data\"}"
+                )
 
-              AppKit.request(
-                request = requestParams,
-                onError = { err -> throw err },
-                onSuccess = { ->
-                  MainRepository.registerWallet(
-                    walletAddress = userWalletAddress,
-                    callback = { success ->
-                      if (!success) {
-                        throw RuntimeException("Failed to update local wallet address")
+                AppKit.request(
+                  request = requestParams,
+                  onError = { err -> throw err },
+                  onSuccess = { ->
+                    MainRepository.registerWallet(
+                      walletAddress = userWalletAddress,
+                      callback = { success ->
+                        if (!success) {
+                          throw RuntimeException("Failed to update local wallet address")
+                        }
                       }
-                    }
-                  )
-                }
-              )
-            }
-          }
+                    )
+                  }
+                )
+              } else {
+                AppKit.disconnect({}, {})
+              }
+            },
+            false
+          )
         }
       } else {
         // Authentication successful, but no session created (SIWE-only flow)
@@ -99,6 +106,6 @@ object WalletDelegate : AppKit.ModalDelegate {
   }
 
   override fun onError(error: Modal.Model.Error) {
-    throw RuntimeException(error.toString())
+    //throw RuntimeException(error.toString())
   }
 }

@@ -4,16 +4,20 @@ import com.heroesofpenta.data.models.NftHero
 import com.heroesofpenta.data.models.NonceResponse
 import com.heroesofpenta.data.models.User
 import com.heroesofpenta.data.models.WalletResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 // Example request/response data classes
 data class TikTokLoginRequest(val code: String)
-data class LoginResponse(val token: String, val expiresIn: Long)
+data class LoginResponse(val accessToken: String, val expiresIn: Long)
 data class RefreshTokenResponse(val token: String, val expiresIn: Long)
 data class BasicResponse(val data: String)
 
@@ -47,7 +51,7 @@ interface ApiService {
     // fun deleteWallet(): Call<DeleteResponse>
 
     // Exchange TikTok code for server session token
-    @POST("auth/tiktok-login")
+    @POST("auth/login/tiktok")
     fun tiktokLogin(@Body request: TikTokLoginRequest): Call<LoginResponse>
 
     // Optionally handle refresh
@@ -71,4 +75,10 @@ interface ApiService {
     ): Call<BasicResponse>
 
     // Add all other endpoints e.g. training, metamask, etc.
+    @Multipart
+    @POST("training/selfie")
+    fun uploadSelfie(
+      @Part selfie: MultipartBody.Part,
+      @Part("selectedHeroIds") selectedHeroIds: RequestBody
+    ): Call<BasicResponse>
 }

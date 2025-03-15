@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/layoutAuthRoot"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <!-- The background VideoView -->
+  <VideoView
+    android:id="@+id/videoBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="centerCrop"
+    android:layout_gravity="center" />
+
+  <!-- Your existing layout with buttons in a vertical stack -->
+  <LinearLayout
     android:id="@+id/layoutAuth"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,24 +23,25 @@
     android:gravity="center_horizontal">
 
     <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:layout_marginBottom="16dp" />
+      android:id="@+id/btnLogin"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Login"
+      android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_marginBottom="16dp" />
+      android:id="@+id/btnRegister"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Register"
+      android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/btnDemo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Demo"
-        android:layout_marginBottom="16dp" />
+      android:id="@+id/btnDemo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Demo"
+      android:layout_marginBottom="16dp" />
+  </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

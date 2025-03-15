@@ -9,16 +9,16 @@ import com.reown.android.relay.ConnectionType
 import com.reown.appkit.client.AppKit
 import com.reown.appkit.client.Modal
 import com.reown.appkit.client.models.request.Request
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+import java.util.UUID
 
 object WalletService {
-  @OptIn(ExperimentalUuidApi::class)
+  private const val CONTRACT_ADDRESS = "17c859A939591c293375AC23307dbe868b387c84"
+  private const val REGISTER_ACCOUNT_CODE = "64724f5e"
   fun init() {
     val authPayloadParams = Modal.Model.AuthPayloadParams(
-      chains = listOf("eip155:1", "eip155:137"),
+      chains = listOf("eip155:534351", "eip155:534352"),
       domain = "heroesofpenta.com",
-      nonce = Uuid.random().toString(),//uniqueNonce,
+      nonce =  UUID.randomUUID().toString(),//uniqueNonce,
       uri = "https://heroesofpenta.com/login",
       statement = "I confirm that I want to link my wallet address with my Heroes of Penta and TikTok accounts. I accept the General Terms of Service as stated at https://heroesofpenta.com/terms",
       methods = listOf("personal_sign", "eth_sendTransaction"),
@@ -28,12 +28,42 @@ object WalletService {
     AppKit.setDelegate(WalletDelegate)
   }
 
-  @OptIn(ExperimentalUuidApi::class)
+  @OptIn(ExperimentalStdlibApi::class)
+  fun assign(userId: UInt, callback: (error: Throwable?) -> Unit) {
+    val userWalletAddress = AppKit.getAccount()?.address
+      ?: return callback(IllegalStateException("no connected wallet"))
+
+    val argumentsLength = "1".padStart(length = 64, padChar = '0')
+    val accountId = userId.toHexString().padStart(length = 64, padChar = '0')
+    val data = "0x$REGISTER_ACCOUNT_CODE$argumentsLength$accountId"
+    val requestParams = Request(
+      method = "eth_sendTransaction", // 0x17c859A939591c293375AC23307dbe868b387c84
+      params = "{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"data\":\"$data\"}"
+    )
+
+    AppKit.request(
+      request = requestParams,
+      onError = { err -> throw err },
+      onSuccess = { ->
+        MainRepository.registerWallet(
+          walletAddress = userWalletAddress,
+          callback = { success ->
+            if (!success) {
+              callback(RuntimeException("Failed to update local wallet address"))
+            } else {
+              callback(null)
+            }
+          }
+        )
+      }
+    )
+  }
+
   fun connect(onSuccess: (url: String) -> Unit, onError: (err: Modal.Model.Error) -> Unit) {
     val authOpts = Modal.Params.Authenticate(
       chains = listOf("eip155:534351", "eip155:534352"),
       domain = "heroesofpenta.com",
-      nonce = Uuid.random().toString(),
+      nonce =  UUID.randomUUID().toString(),
       uri = "https://heroesofpenta.com/login",
       statement = "I confirm that I want to link my wallet address with my Heroes of Penta and TikTok accounts. I accept the General Terms of Service as stated at https://heroesofpenta.com/terms",
       methods = listOf("personal_sign", "eth_sendTransaction")
@@ -63,12 +93,11 @@ object WalletService {
     )
   }
 
-  @OptIn(ExperimentalUuidApi::class)
   fun disconnect(onSuccess: (url: String) -> Unit, onError: (err: Modal.Model.Error) -> Unit) {
     val authOpts = Modal.Params.Authenticate(
       chains = listOf("eip155:534351", "eip155:534352"),
       domain = "heroesofpenta.com",
-      nonce = Uuid.random().toString(),
+      nonce = UUID.randomUUID().toString(),
       uri = "https://heroesofpenta.com/login",
       statement = "I confirm that I want to disconnect my wallet address from my Heroes of Penta and TikTok accounts.",
       methods = listOf("personal_sign", "eth_sendTransaction")

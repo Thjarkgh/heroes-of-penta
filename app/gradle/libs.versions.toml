@@ -1,44 +1,101 @@
 [versions]
-agp = "8.8.2"
-androidBom = "1.0.0"
+accompanistNavigationMaterial = "0.34.0"
+#activityCompose = "1.10.1"
+composeViewModel = "2.8.0"
+agp = "8.4.1"
+androidBom = "1.3.0"
+browser = "1.8.0"
+coilCompose = "2.6.0"
 ethersBom = "1.3.0"
 glideVersion = "4.16.0"
-kotlin = "2.0.21"
-ksp = "2.0.21-1.0.27"
+koinAndroidxCompose = "3.5.6"
+kotlin = "1.9.24"
+ksp = "1.9.24-1.0.20"
 abigen = "1.3.0"
-coreKtx = "1.15.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+lifecycleRuntimeKtx = "2.8.7"
+lifecycleViewmodelCompose = "2.8.5"
 material = "1.12.0"
 constraintlayout = "2.2.1"
 cameraView = "1.4.1"
+materialIconsCore = "1.7.8"
+palette = "1.0.0"
 retrofit = "2.11.0"
+tiktokOpenSdkAuth = "2.3.0"
+tiktokOpenSdkCore = "2.3.0"
+tiktokOpenSdkShare = "2.3.0"
+navigationCompose = "2.8.9"
+navigationComposeTesting = "2.8.9"
+material3Android = "1.3.1"
+androidxCore = "1.13.1"
+androidxAppCompat = "1.7.0"
+andoridxMaterial = "1.12.0"
+androidxLifecycle = "2.8.5"
+androidxTest = "1.6.1"
+androidxTestOrchestration = "1.5.0"
+androidxSecurity = "1.1.0-alpha06"
+androidxDatastore = "1.1.1"
+androidxNavigation = "2.8.0"
+composeBOM="2024.05.00"
 
 [libraries]
-android-bom = { module = "com.reown:android-bom", version.ref = "androidBom" }
-android-core = { module = "com.reown:android-core", version = "androidBom" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-appkit = { module = "com.reown:appkit" }
+accompanist-navigation-material = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanistNavigationMaterial" }
+#androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
-ethers-abi = { module = "io.kriptal.ethers:ethers-abi" }
-ethers-bom = { module = "io.kriptal.ethers:ethers-bom", version.ref = "ethersBom" }
-ethers-core = { module = "io.kriptal.ethers:ethers-core" }
-ethers-providers = { module = "io.kriptal.ethers:ethers-providers" }
-ethers-signers = { module = "io.kriptal.ethers:ethers-signers" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+reown-android-bom = { module = "com.reown:android-bom", version.ref = "androidBom" }
+reown-android-core = { module = "com.reown:android-core" }
+reown-appkit = { module = "com.reown:appkit" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+tiktok-open-sdk-auth = { module = "com.tiktok.open.sdk:tiktok-open-sdk-auth", version.ref = "tiktokOpenSdkAuth" }
+tiktok-open-sdk-core = { module = "com.tiktok.open.sdk:tiktok-open-sdk-core", version.ref = "tiktokOpenSdkCore" }
+tiktok-open-sdk-share = { module = "com.tiktok.open.sdk:tiktok-open-sdk-share", version.ref = "tiktokOpenSdkShare" }
+#-------------------------- Compose --------------------------
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBOM" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-compose-ui-test-junit = { module = "androidx.compose.ui:ui-test-junit4", version = "1.7.1" }
+androidx-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNavigation" }
+androidx-compose-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "androidxNavigation" }
+androidx-compose-lifecycle = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeViewModel" }
+androidx-compose-material = { module = "androidx.compose.material:material", version = "1.7.1" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version = "1.7.1" }
+#androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
+#androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+#androidx-ui = { module = "androidx.compose.ui:ui" }
+#androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+#androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+#androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+#androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+#androidx-material = { module = "androidx.compose.material:material" }
+#androidx-material-navigation = { module = "androidx.compose.material:material-navigation" }
+#androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+#androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+#androidx-compose-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationComposeTesting" }
+#ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+#ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+#compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

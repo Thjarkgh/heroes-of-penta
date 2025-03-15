@@ -8,6 +8,9 @@ import com.reown.android.CoreClient
 import com.reown.android.relay.ConnectionType
 import com.reown.appkit.client.AppKit
 import com.reown.appkit.client.Modal
+import com.reown.appkit.presets.AppKitChainsPresets
+import com.reown.appkit.presets.AppKitChainsPresets.ethToken
+import com.reown.appkit.utils.EthUtils
 
 class MyApp : Application() {
   private var ready: Boolean = false
@@ -49,5 +52,17 @@ class MyApp : Application() {
         throw InstantiationException(error.toString())
       }
     )
+    AppKit.setChains(listOf(Modal.Model.Chain(
+      chainName = "Scroll Sepolia",
+      chainNamespace = "eip155",
+      chainReference = "534351",
+      requiredMethods = EthUtils.ethRequiredMethods,
+      optionalMethods = EthUtils.ethOptionalMethods,
+      events = EthUtils.ethEvents,
+      token = ethToken,
+      rpcUrl = "https://sepolia-rpc.scroll.io",
+      blockExplorerUrl = "https://sepolia.scrollscan.com"
+    )))
+    AppKit.disconnect({},{})
   }
 }

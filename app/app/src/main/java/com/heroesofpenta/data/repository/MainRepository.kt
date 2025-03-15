@@ -1,6 +1,8 @@
 package com.heroesofpenta.data.repository
 
+import android.graphics.Bitmap
 import android.net.Uri
+import com.heroesofpenta.BuildConfig
 import com.heroesofpenta.data.models.DeleteResponse
 import com.heroesofpenta.data.models.NftHero
 import com.heroesofpenta.data.models.NonceResponse
@@ -10,9 +12,15 @@ import com.heroesofpenta.data.network.BasicResponse
 import com.heroesofpenta.data.network.LoginResponse
 import com.heroesofpenta.data.network.RetrofitClient
 import com.heroesofpenta.data.network.TikTokLoginRequest
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 
 object MainRepository {
   private var user: User? = null
@@ -27,7 +35,7 @@ object MainRepository {
         if (response.isSuccessful) {
           response.body()?.let { loginResp ->
             // Save the server session token
-            RetrofitClient.tokenProvider().saveToken(loginResp.token)
+            RetrofitClient.tokenProvider().saveToken(loginResp.accessToken)
             //saveUserToken(loginResp.token)
             callback(true)
             return
@@ -46,7 +54,8 @@ object MainRepository {
 
   // region User Info
 fun createDummyUser() {
-  user = User
+  RetrofitClient.tokenProvider().saveToken(BuildConfig.dummyUserToken)
+  user = User(BuildConfig.dummyUserId.toUInt(), "demo")
 }
   /**
    * 1. Fetch current user data from the server.
@@ -87,14 +96,17 @@ fun createDummyUser() {
       .enqueue(object : Callback<BasicResponse> {
         override fun onResponse(call: Call<BasicResponse>, response: Response<BasicResponse>) {
           if (response.isSuccessful) {
-            getUser { u ->
-              if (u != null) {
-                user = User(u.id, name, u.metamaskAddress, u.maxTrainees)
-                callback(true)
-              } else {
-                callback(false)
-              }
-            }
+            getUser(
+              { u ->
+                if (u != null) {
+                  user = User(u.id, name, null, u.maxTrainees)
+                  callback(true)
+                } else {
+                  callback(false)
+                }
+              },
+              false
+            )
           } else {
             callback(false)
           }
@@ -146,14 +158,17 @@ fun createDummyUser() {
 
     // we cannot get the signed data => workaround: store on blockchain => server needs to fetch from there
     // just update local cache
-    getUser { u ->
-      if (u != null) {
-        user = User(u.id, u.name, walletAddress, u.maxTrainees)
-        callback(true)
-      } else {
-        callback(false)
-      }
-    }
+    getUser(
+      { u ->
+        if (u != null) {
+          user = User(u.id, u.name, null, u.maxTrainees)
+          callback(true)
+        } else {
+          callback(false)
+        }
+      },
+      false
+    )
 //    val body = mapOf(
 //      "signature" to signature,
 //      "walletAddress" to walletAddress
@@ -185,14 +200,17 @@ fun createDummyUser() {
 //            callback(false)
 //            return
 //        }
-    getUser { u ->
-      if (u != null) {
-        user = User(u.id, u.name, null, u.maxTrainees)
-        callback(true)
-      } else {
-        callback(false)
-      }
-    }
+    getUser(
+      { u ->
+        if (u != null) {
+          user = User(u.id, u.name, null, u.maxTrainees)
+          callback(true)
+        } else {
+          callback(false)
+        }
+      },
+      false
+    )
 //    RetrofitClient.instance.disconnectWallet() //"Bearer $token")
 //      .enqueue(object : Callback<WalletResponse> {
 //        override fun onResponse(call: Call<WalletResponse>, response: Response<WalletResponse>) {
@@ -324,4 +342,54 @@ fun createDummyUser() {
 //        // read from SharedPreferences or similar
 //        return "..."
 //    }
+
+  /**
+   * Uploads the given [bitmap] to the server using a multipart POST request.
+   * The server endpoint is "http://heroesofpenta.com/api/training/selfie".
+   *
+   * @param bitmap the user's captured selfie
+   * @param heroIds optional, comma-separated string of hero IDs
+   * @return true if the upload was successful, false otherwise
+   */
+  fun uploadSelfie(
+    bitmap: Bitmap,
+    heroIds: String,
+    onResult: (Boolean) -> Unit
+  ) {
+    // 1) Convert the Bitmap to a JPEG byte array
+    val byteStream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream)
+    val imageBytes = byteStream.toByteArray()
+
+    // 2) Build a multipart form request body
+    val imageRequestBody = imageBytes.toRequestBody("image/jpeg".toMediaTypeOrNull())
+    val multipartBody = MultipartBody.Part.createFormData(
+        name = "selfie",
+        filename = "selfie.jpg",
+        body = imageRequestBody
+      )
+
+    // 3) Create a RequestBody for the selectedHeroIds
+    val idsRequestBody = heroIds
+      .toRequestBody("text/plain".toMediaTypeOrNull())
+
+    // 4) Execute the Retrofit call
+    val call = RetrofitClient.instance.uploadSelfie(multipartBody, idsRequestBody)
+    call.enqueue(object : Callback<BasicResponse> {
+      override fun onResponse(
+        call: Call<BasicResponse>,
+        response: Response<BasicResponse>
+      ) {
+        if (response.isSuccessful) {
+          onResult(true)
+        } else {
+          onResult(false)
+        }
+      }
+
+      override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+        onResult(false)
+      }
+    })
+  }
 }

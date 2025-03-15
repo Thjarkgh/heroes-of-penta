@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Heroes of Penta</string>
+    <string name="error_code_with_message">Error: %1d: %2s</string>
+  <string name="error_code_with_error_description">Error: %1s: %2s</string>
+  <string name="error_code_with_error">Error: %1d: %2s</string>
+  <string name="ok">OK</string>
+  <string name="error_dialog_title">Error: %1s</string>
 </resources>
