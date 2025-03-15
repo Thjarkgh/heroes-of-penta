@@ -10,12 +10,9 @@ import SubscriberController from "./presentation/controller/SubscriberController
 import SubscriberService from "./service/SubscriberService";
 import SmtpService from "./adapter/SmtpService";
 import SubscriberRepository from "./repository/mariadb/subscriberRepository";
-import MentionsRepository from "./repository/mariadb/mentionsRepository";
 import mariadb from "mariadb";
 import MentionsService from "./service/MentionsService";
 import InstagramMentionsController from "./presentation/controller/InstagramMentionsController";
-import passport from 'passport';
-import { configurePassport } from './presentation/middleware/passportJwt';
 import { AuthController } from "./presentation/controller/AuthController";
 import AuthService from "./service/AuthService";
 import { RefreshTokenRepository } from "./repository/mariadb/refreshTokenRepository";
@@ -123,7 +120,6 @@ const start = async () => {
   const fletchlingRepo = new FletchlingRepository("https://sepolia-rpc.scroll.io/", `0x${getEnvVarOrThrow("FLETCHLING_NFT_ADDRESS")}`);
   const userService = new UserService(userRepo, instagramAdapter, tikTokAdapter, walletRepo, fletchlingRepo);
   const userController = new UserController(userService);
-  userController.setup(app);
 
   // Mentions
   //const mentionsRepository = await MentionsRepository.createWithPool(pool, database);
@@ -139,7 +135,7 @@ const start = async () => {
 
   // Refresh
   const refreshTokenRepo = await RefreshTokenRepository.createWithPool(pool, database);
-  const authService = new AuthService(refreshTokenRepo);
+  const authService = new AuthService(userRepo, refreshTokenRepo, getEnvVarOrThrow("JWT_SECRET"));
   const authController = new AuthController(authService, userService);
   authController.setup(app);
 
@@ -150,9 +146,12 @@ const start = async () => {
   const trainingController = new TrainingController(trainingService);
 
   // authorized zone
-  const jwtSecret = getEnvVarOrThrow("JWT_SECRET");
-  configurePassport(userRepo, jwtSecret);
-  app.use(passport.initialize());
+  authService.setupMiddleware(app);
+
+  userController.setup(app);
+  trainingController.setup(app);
+  // const jwtSecret = getEnvVarOrThrow("JWT_SECRET");
+  // configurePassport(userRepo, jwtSecret);
   // app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
   //   // req.user is now set
   //   res.json({ message: 'This is a protected resource' });
