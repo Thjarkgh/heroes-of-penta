@@ -103,11 +103,6 @@ const start = async () => {
   const subscriberRepository = await SubscriberRepository.createWithPool(pool, database);
   const subscriberService = new SubscriberService(subscriberRepository, smtpClient);
   const subscriberController = new SubscriberController(subscriberService);
-  subscriberController.setupRoutes(app);
-  
-  // Index
-  app.get('/', function (req, res) { res.sendFile(path.resolve(basepath, 'index.html')) });
-
 
   // User
   const userInstagramAppId = getEnvVarOrThrow("INSTAGRAM_USER_APP_ID");
@@ -131,19 +126,27 @@ const start = async () => {
   const appSecret = getEnvVarOrThrow("INSTAGRAM_APP_SECRET");
   const msgSecret = getEnvVarOrThrow("INSTAGRAM_MSG_SECRET");
   const mentionsController = new InstagramMentionsController(mentionsService, appSecret, msgSecret);
-  mentionsController.setupRoutes(app);
 
   // Refresh
   const refreshTokenRepo = await RefreshTokenRepository.createWithPool(pool, database);
   const authService = new AuthService(userRepo, refreshTokenRepo, getEnvVarOrThrow("JWT_SECRET"));
   const authController = new AuthController(authService, userService);
-  authController.setup(app);
 
   const dataDeletionController = new DataDeletionController(appSecret);
-  dataDeletionController.setup(app);
 
   const trainingService = new TrainingService(trainerRepo, openAI, query);
   const trainingController = new TrainingController(trainingService);
+
+
+  ///// SETUP ROUTES:
+  /// PUBLIC ZONE (no login required)
+  subscriberController.setupRoutes(app);
+  dataDeletionController.setup(app);
+  mentionsController.setupRoutes(app);
+  authController.setup(app);
+  
+  // Index
+  app.get('/', function (req, res) { res.sendFile(path.resolve(basepath, 'index.html')) });
 
   // authorized zone
   authService.setupMiddleware(app);
