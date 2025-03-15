@@ -26,6 +26,12 @@ import TrainerRepository from "./repository/mariadb/trainerRepository";
 import OpenAiAdapter from "./adapter/OpenAiAdapter";
 import InstagramMessageAdapter from "./adapter/InstagramMessageAdapter";
 import { readFileSync } from "fs";
+import TikTokAuthAdapter from "./adapter/TikTokAuthAdapter";
+import WalletRepository from "./repository/web3/WalletRepository";
+import FletchlingRepository from "./repository/web3/FletchlingRepository";
+import { DataDeletionController } from "./presentation/controller/DataDeletionController";
+import TrainingController from "./presentation/controller/TrainingController";
+import TrainingService from "./service/TrainingService";
 
 const start = async () => {
   config();
@@ -109,8 +115,11 @@ const start = async () => {
   const userInstagramAppSecret = getEnvVarOrThrow("INSTAGRAM_USER_APP_SECRET");
   const userInstagramAppRedirectUri = getEnvVarOrThrow("INSTAGRAM_USER_APP_REDIRECTURI");
   const instagramAdapter = new InstagramAuthAdapter(userInstagramAppId, userInstagramAppSecret, userInstagramAppRedirectUri);
+  const tikTokAdapter = new TikTokAuthAdapter(getEnvVarOrThrow("TIKTOK_CLIENT_KEY"), getEnvVarOrThrow("TIKTOK_CLIENT_SECRET"), "https://heroesofpenta.com/auth/login/tiktok");
   const userRepo = await UserRepository.createWithPool(pool, database);
-  const userService = new UserService(userRepo, instagramAdapter);
+  const walletRepo = new WalletRepository("https://sepolia-rpc.scroll.io/", `0x${getEnvVarOrThrow("ACCOUNT_REGISTER_ADDRESS")}`);
+  const fletchlingRepo = new FletchlingRepository("https://sepolia-rpc.scroll.io/", `0x${getEnvVarOrThrow("FLETCHLING_NFT_ADDRESS")}`);
+  const userService = new UserService(userRepo, instagramAdapter, tikTokAdapter, walletRepo, fletchlingRepo);
   const userController = new UserController(userService);
   userController.setup(app);
 
@@ -129,8 +138,14 @@ const start = async () => {
   // Refresh
   const refreshTokenRepo = await RefreshTokenRepository.createWithPool(pool, database);
   const authService = new AuthService(refreshTokenRepo);
-  const authController = new AuthController(authService);
+  const authController = new AuthController(authService, userService);
   authController.setup(app);
+
+  const dataDeletionController = new DataDeletionController(appSecret);
+  dataDeletionController.setup(app);
+
+  const trainingService = new TrainingService(trainerRepo, openAI, query);
+  const trainingController = new TrainingController(trainingService);
 
   // authorized zone
   const jwtSecret = getEnvVarOrThrow("JWT_SECRET");

@@ -13,6 +13,13 @@ export default class Trainer {
     }
   }
 
+  setTrainees(trainees: Trainee[]) {
+    if (trainees.length > this._maxTrainees) {
+      throw new Error(`too many trainees!`);
+    }
+    this._trainees = trainees;
+  }
+  
   addTrainee(trainee: Trainee) {
     if (this._trainees.length < this._maxTrainees) {
       this._trainees.push(trainee);

@@ -1,16 +1,17 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import AuthService from '../../service/AuthService';
-import IRefreshTokenRepository from '../../domain/entities/refreshTokenAggregate/IRefreshTokenRepository';
+import UserService from '../../service/UserService';
 
 export class AuthController {
   constructor(
-    private authService: AuthService
+    private readonly authService: AuthService,
+    private readonly userService: UserService
   ) {}
 
   public setup(app: Express) {
     // We create a login route or use your existing Instagram callback.
     // This is a generic login route if we had email/password, etc.
-    app.post('/auth/login', this.login.bind(this));
+    app.post('/auth/login/tiktok', this.loginTikTok.bind(this));
 
     // Refresh token route
     app.post('/auth/refresh', this.refresh.bind(this));
@@ -19,10 +20,32 @@ export class AuthController {
     app.post('/auth/logout', this.logout.bind(this));
   }
 
+  private async loginTikTok(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Exchange TikTok code for Tokens
+      let code = req.body.code as string;
+      if (!code) {
+        res.status(400).json({ error: 'Missing code' });
+        return;
+      }
+
+      const userId = await this.userService.handleTikTokCallbackCode(code);
+
+      const { accessToken, refreshToken } = await this.authService.generateTokens(userId);
+
+      // Send tokens back; Access token can be in JSON, refresh in a cookie
+      this.setRefreshTokenCookie(res, refreshToken);
+      res.json({ accessToken });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
   private async login(req: Request, res: Response, next: NextFunction) {
     try {
       // For Instagram or Metamask login, you'd have identified user ID by now.
       // We’ll assume you have userId from your logic. 
+      // need to put tiktok
       const userId = req.body.userId;
       if (!userId) {
         res.status(400).json({ error: 'No userId' });
