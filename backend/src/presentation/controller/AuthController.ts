@@ -73,6 +73,7 @@ export class AuthController {
       this.setRefreshTokenCookie(res, refreshToken);
       res.json({ accessToken });
     } catch (error: any) {
+      console.log(`Error: ${error.toString()}`);
       res.status(400).json({ error: 'Refresh token invalid or expired' });
     }
   }
