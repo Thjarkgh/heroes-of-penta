@@ -14,12 +14,24 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     try {
       // TODO: For the future we should also handle schema updates, for now: just ensure the tables are thereCREATE TABLE refresh_tokens (
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`refreshToken` ( `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY, `token` varchar(512) NOT NULL UNIQUE, `revoked` bit DEFAULT 0, `expiresAt` datetime NOT NULL, `userId` int NOT NULL REFERENCES `'+database+'`.`user` ( `id` ) );');
+
+      const refreshTokenRepo = new RefreshTokenRepository(pool, database);
+
+      const dummyUserId = process.env["DUMMY_USER_ID"];
+      const dummyUserToken = process.env["DUMMY_USER_TOKEN"];
+    
+      if (dummyUserId != undefined && dummyUserToken != undefined) {
+        const existingDummyRefreshToken = await refreshTokenRepo.findByToken(dummyUserToken);
+        if (existingDummyRefreshToken == null) {
+          await refreshTokenRepo.create(new RefreshToken(dummyUserToken, Number.parseInt(dummyUserId), new Date(2027, 2, 10, 0, 0, 0, 0), false));
+        }
+      }
+
+      return refreshTokenRepo;
     }
     finally {
       await connection.release();
     }
-
-    return new RefreshTokenRepository(pool, database);
   }
 
   public static create(host: string, port: number, database: string, user: string, password: string) {
@@ -51,16 +63,22 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
   async findByToken(token: string): Promise<RefreshToken | null> {
     const connection = await this.pool.getConnection();
     try {
-      const [rows] = await connection.query(
+      const rows = await connection.query<{id: number, token: string, userId: number, revoked: boolean, expiresAt: Date}[]>(
         'SELECT * FROM `'+this.database+'`.`refreshToken` WHERE `token` = ? LIMIT 1;',
         [ token ]
       );
-      const data = (rows as any[])[0];
+      if (rows.length === 0) {
+        return null;
+      }
+      if (rows.length !== 1) {
+        throw new Error(`Invalid number of tokens (${rows.length}) for token ${token.substring(0, 10)}`);
+      }
+      const data = rows[0];
       if (!data) return null;
       return new RefreshToken(
         data.token,
-        data.user_id,
-        data.expires_at,
+        data.userId,
+        data.expiresAt,
         !!data.revoked
       );
     }

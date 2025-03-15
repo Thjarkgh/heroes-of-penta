@@ -20,6 +20,15 @@ export default class UserRepository implements IUserRepository {
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`instagramAccount` ( `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY, `userId` int not null REFERENCES `'+database+'`.`user` ( `id` ), `instagramUserId` varchar(128) NOT NULL UNIQUE, `token` varchar(512) null, `expiry` datetime null );');
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`tiktokAccount` ( `tikTokId` varchar(128) NOT NULL PRIMARY KEY, `userId` int not null UNIQUE REFERENCES `'+database+'`.`user` ( `id` ), `accessToken` varchar(512) NOT NULL, `accessTokenExpiry` int NOT NULL, `refreshToken` varchar(512) NOT NULL, `refreshTokenExpiry` int NOT NULL );');
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`wallet` ( `address` char(42) NOT NULL PRIMARY KEY, `userId` int NOT NULL UNIQUE REFERENCES `'+database+'`.`user` ( `id` ) );');
+
+      const dummyUserId = process.env["DUMMY_USER_ID"];
+      const existingDummyUser = await connection.query('SELECT * FROM `'+database+'`.`user` WHERE `id` = ?;', [dummyUserId]);
+      if (existingDummyUser.length < 1) {
+        await connection.execute(
+          'INSERT INTO `'+database+'`.`user` (`id`, `acceptedTermsOnce`, `acceptedTerms`, `acceptedPrivacyOnce`, `acceptedPrivacy`) VALUES (?, ?, ?, ?, ?);',
+          [dummyUserId, 0, 0, 0, 0]
+        );
+      }
     }
     finally {
       await connection.release();
