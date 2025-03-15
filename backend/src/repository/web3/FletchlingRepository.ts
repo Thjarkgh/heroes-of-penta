@@ -109,38 +109,33 @@ export default class FletchlingRepository implements IFletchlingRepository {
     const result = [] as Fletchling[];
     for (let i = 0; i < count; ++i) {
       const fletchlingId: bigint = await this.contract.tokenOfOwnerByIndex(wallet, i);
-      const fletchlingCid: string = await this.contract.tokenURI(fletchlingId);
-      // TODO: Cache!
-      const fletchlingCidUrl = `https://ipfs.io/ipfs/${fletchlingCid.substring(7)}`;
-      const fletchlingInfoRaw = await fetch(fletchlingCidUrl);
-      const fletchlingInfo: { description: string, image: string } = await fletchlingInfoRaw.json();
-      const nameKey = await this.contract.NAME_KEY();
-      const xpKey = await this.contract.XP_KEY();
-      const dynValues: string[] = await this.contract.getTraitValues(fletchlingId, [nameKey, xpKey]);
-      result.push({
-        id: Number.parseInt(fletchlingId.toString(10), 10),
-        name: dynValues[0] === "0x0000000000000000000000000000000000000000000000000000000000000000" ? "Nameless" : ethers.decodeBytes32String(dynValues[0]),
-        description: fletchlingInfo.description,
-        xp: Number.parseInt(dynValues[1], 16),
-        imageUrl: fletchlingInfo.image
-      });
+      const fletchling = await this._getFletchling(fletchlingId);
+      result.push(fletchling);
     }
 
     return result;
   }
   
   async getFletchling(id: number): Promise<Fletchling> {
-    const cid = await this.contract.tokenURI(id);
-    const info = await (await fetch(cid)).json();
+    return this._getFletchling(BigInt(id));
+  }
+
+  private async _getFletchling(fletchlingId: bigint): Promise<Fletchling> {
+    //const fletchlingId: bigint = await this.contract.tokenOfOwnerByIndex(wallet, i);
+    const fletchlingCid: string = await this.contract.tokenURI(fletchlingId);
+    // TODO: Cache!
+    const fletchlingCidUrl = `https://ipfs.io/ipfs/${fletchlingCid.substring(7)}`;
+    const fletchlingInfoRaw = await fetch(fletchlingCidUrl);
+    const fletchlingInfo: { description: string, image: string } = await fletchlingInfoRaw.json();
     const nameKey = await this.contract.NAME_KEY();
     const xpKey = await this.contract.XP_KEY();
-    const dynValues = await this.contract.getTraitValues(id, [nameKey, xpKey]);
+    const dynValues: string[] = await this.contract.getTraitValues(fletchlingId, [nameKey, xpKey]);
     return {
-      id,
-      name: dynValues[0],
-      description: info.description,
-      xp: dynValues[1],
-      imageUrl: info.image
+      id: Number.parseInt(fletchlingId.toString(10), 10),
+      name: dynValues[0] === "0x0000000000000000000000000000000000000000000000000000000000000000" ? "Nameless" : ethers.decodeBytes32String(dynValues[0]),
+      description: fletchlingInfo.description,
+      xp: Number.parseInt(dynValues[1], 16),
+      imageUrl: fletchlingInfo.image
     };
   }
 }

@@ -14,7 +14,7 @@ export class UserController {
     // ...
     app.get('/user/me', this.me.bind(this));
     app.get('/user/nft-heroes', this.nftHeroes.bind(this));
-    app.get('/user/nft-hero/{id}', this.nftHeroe.bind(this));
+    app.get('/user/nft-hero/:id', this.nftHeroe.bind(this));
   }
 
   private async nftHeroes(req: Request, res: Response, next: NextFunction) {
@@ -36,7 +36,7 @@ export class UserController {
       if (!user) {
         res.status(401).send('Not logged in');
       } else {
-        const id = req.query.id;
+        const id = req.params.id;
         if (id == undefined) {
           res.status(500).send(`missing id`);
         } else {

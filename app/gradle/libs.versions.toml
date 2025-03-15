@@ -41,6 +41,7 @@ androidxSecurity = "1.1.0-alpha06"
 androidxDatastore = "1.1.1"
 androidxNavigation = "2.8.0"
 composeBOM="2024.05.00"
+timber = "5.0.1"
 
 [libraries]
 accompanist-navigation-material = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanistNavigationMaterial" }
@@ -93,6 +94,7 @@ androidx-compose-material-icons-core = { module = "androidx.compose.material:mat
 #androidx-compose-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationComposeTesting" }
 #ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 #ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

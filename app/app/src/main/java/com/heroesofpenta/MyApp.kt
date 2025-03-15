@@ -11,6 +11,7 @@ import com.reown.appkit.client.Modal
 import com.reown.appkit.presets.AppKitChainsPresets
 import com.reown.appkit.presets.AppKitChainsPresets.ethToken
 import com.reown.appkit.utils.EthUtils
+import timber.log.Timber
 
 class MyApp : Application() {
   private var ready: Boolean = false
@@ -49,7 +50,8 @@ class MyApp : Application() {
       },
       onError = { error ->
         // Error will be thrown if there's an issue during initialization
-        throw InstantiationException(error.toString())
+        Timber.e(tag(this), error.throwable.stackTraceToString())
+        // throw InstantiationException(error.toString())
       }
     )
     AppKit.setChains(listOf(Modal.Model.Chain(
@@ -64,5 +66,9 @@ class MyApp : Application() {
       blockExplorerUrl = "https://sepolia.scrollscan.com"
     )))
     AppKit.disconnect({},{})
+  }
+
+  private inline fun <reified T : Any> tag(currentClass: T): String {
+    return ("Wallet" + currentClass::class.java.canonicalName!!.substringAfterLast(".")).take(23)
   }
 }
