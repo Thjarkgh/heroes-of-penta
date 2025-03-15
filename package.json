@@ -25,6 +25,7 @@
     },
     "homepage": "https://github.com/Thjarkgh/heroes-of-penta#readme",
     "devDependencies": {
+        "@types/cookie-parser": "^1.4.8",
         "vitest": "^3.0.5",
         "vitest-mock-extended": "^2.0.2"
     }

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 import http from "http";
 import path from 'path';
 import { getBaseDir } from "./helper/getBaseDir";
@@ -37,8 +38,9 @@ const start = async () => {
   config();
 
   const app = express();
-  app.use(compression())
+  app.use(compression());
   app.use(cors());
+  app.use(cookieParser());
   app.use(express.json({
     limit: '1mb',
     verify: (req, res, buffer) => {

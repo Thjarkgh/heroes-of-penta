@@ -38,7 +38,7 @@ object RetrofitClient {
 
     val instance: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl("https://heroesofpenta.com/app-api/")
+            .baseUrl("https://heroesofpenta.com/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
