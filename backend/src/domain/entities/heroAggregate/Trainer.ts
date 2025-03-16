@@ -1,5 +1,5 @@
 import Trainee from "./Trainee";
-const minTrainerBreakTime = 6 * 60 * 60 * 1000; // 6h
+const minTrainerBreakTime = 60 * 1000; // 1 min for testing 6 * 60 * 60 * 1000; // 6h
 
 export default class Trainer {
   constructor(
@@ -19,7 +19,7 @@ export default class Trainer {
     }
     this._trainees = trainees;
   }
-  
+
   addTrainee(trainee: Trainee) {
     if (this._trainees.length < this._maxTrainees) {
       this._trainees.push(trainee);
@@ -41,7 +41,7 @@ export default class Trainer {
   }
 
   canTrain(timestamp: number = Date.now()) {
-    return timestamp < this._lastTraining + minTrainerBreakTime;
+    return timestamp >= this._lastTraining + minTrainerBreakTime;
   }
 
   get traineeCount() {
