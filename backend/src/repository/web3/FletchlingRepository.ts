@@ -147,7 +147,7 @@ export default class FletchlingRepository implements IFletchlingRepository {
     const contractRw: Contract = this.contract.connect(this.signer) as Contract;
     const oldFletchling = await this.getFletchling(fletchling.id);
     if (oldFletchling.xp !== fletchling.xp) {
-      await contractRw.addXp(fletchling.id, fletchling.xp - oldFletchling.xp);
+      await contractRw.addXP(fletchling.id, fletchling.xp - oldFletchling.xp);
     }
   }
 }
