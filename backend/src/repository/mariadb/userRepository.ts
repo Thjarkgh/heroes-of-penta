@@ -183,9 +183,9 @@ export default class UserRepository implements IUserRepository {
       await this.setOptionalUniqueUserReferencedObject(
         existing.tikTokAccount,
         user.tikTokAccount,
-        (id) => connection.query('DELETE `'+this.database+'`.`tiktokAccount` WHERE `tikTokId` = ?;', [id]),
+        (id) => connection.query('DELETE FROM `'+this.database+'`.`tiktokAccount` WHERE `tikTokId` = ?;', [id]),
         (p) => connection.query(
-          'INSERT INTO `'+this.database+'`.tiktokAccount` ( `tikTokId`, `accessToken`, `accessTokenExpiry`, `refreshToken`, `refreshTokenExpiry` ) VALUES ( ?, ?, ?, ?, ? );',
+          'INSERT INTO `'+this.database+'`.`tiktokAccount` ( `tikTokId`, `accessToken`, `accessTokenExpiry`, `refreshToken`, `refreshTokenExpiry` ) VALUES ( ?, ?, ?, ?, ? );',
           [p.id, p.accessToken, p.accessTokenExpiry, p.refreshToken, p.refreshTokenExpiry]
         ),
         (p) => connection.query(
