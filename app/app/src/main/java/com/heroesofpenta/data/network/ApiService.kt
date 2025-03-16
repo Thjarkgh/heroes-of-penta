@@ -20,6 +20,7 @@ data class TikTokLoginRequest(val code: String)
 data class LoginResponse(val accessToken: String, val expiresIn: Long)
 data class RefreshTokenResponse(val token: String, val expiresIn: Long)
 data class BasicResponse(val data: String)
+data class TrainingResponse(val xp: Int)
 
 interface ApiService {
     // 1) Get current user info
@@ -80,5 +81,5 @@ interface ApiService {
     fun uploadSelfie(
       @Part selfie: MultipartBody.Part,
       @Part("selectedHeroIds") selectedHeroIds: RequestBody
-    ): Call<BasicResponse>
+    ): Call<TrainingResponse>
 }

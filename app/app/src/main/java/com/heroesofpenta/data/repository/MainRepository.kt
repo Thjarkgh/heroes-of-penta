@@ -12,6 +12,7 @@ import com.heroesofpenta.data.network.BasicResponse
 import com.heroesofpenta.data.network.LoginResponse
 import com.heroesofpenta.data.network.RetrofitClient
 import com.heroesofpenta.data.network.TikTokLoginRequest
+import com.heroesofpenta.data.network.TrainingResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -377,10 +378,10 @@ fun createDummyUser() {
 
     // 4) Execute the Retrofit call
     val call = RetrofitClient.instance.uploadSelfie(multipartBody, idsRequestBody)
-    call.enqueue(object : Callback<BasicResponse> {
+    call.enqueue(object : Callback<TrainingResponse> {
       override fun onResponse(
-        call: Call<BasicResponse>,
-        response: Response<BasicResponse>
+        call: Call<TrainingResponse>,
+        response: Response<TrainingResponse>
       ) {
         if (response.isSuccessful) {
           onResult(true)
@@ -389,7 +390,7 @@ fun createDummyUser() {
         }
       }
 
-      override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+      override fun onFailure(call: Call<TrainingResponse>, t: Throwable) {
         onResult(false)
       }
     })
