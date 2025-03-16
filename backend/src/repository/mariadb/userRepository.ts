@@ -18,7 +18,7 @@ export default class UserRepository implements IUserRepository {
       // TODO: For the future we should also handle schema updates, for now: just ensure the tables are there
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`user` ( `id` int not null AUTO_INCREMENT PRIMARY KEY, `acceptedTermsOnce` bit not null, `acceptedTerms` bit not null, `acceptedPrivacyOnce` bit not null, `acceptedPrivacy` bit not null );');
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`instagramAccount` ( `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY, `userId` int not null REFERENCES `'+database+'`.`user` ( `id` ), `instagramUserId` varchar(128) NOT NULL UNIQUE, `token` varchar(512) null, `expiry` datetime null );');
-      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`tiktokAccount` ( `tikTokId` varchar(128) NOT NULL PRIMARY KEY, `userId` int not null UNIQUE REFERENCES `'+database+'`.`user` ( `id` ), `accessToken` varchar(512) NOT NULL, `accessTokenExpiry` bigint NOT NULL, `refreshToken` varchar(512) NOT NULL, `refreshTokenExpiry` bigint NOT NULL );');
+      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`tiktokAccount` ( `tikTokId` varchar(128) NOT NULL PRIMARY KEY, `userId` int not null UNIQUE REFERENCES `'+database+'`.`user` ( `id` ), `accessToken` varchar(512) NOT NULL, `accessTokenExpiry` double NOT NULL, `refreshToken` varchar(512) NOT NULL, `refreshTokenExpiry` double NOT NULL );');
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`wallet` ( `address` char(42) NOT NULL PRIMARY KEY, `userId` int NOT NULL UNIQUE REFERENCES `'+database+'`.`user` ( `id` ) );');
 
       const dummyUserId = process.env["DUMMY_USER_ID"];

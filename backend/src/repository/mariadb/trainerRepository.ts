@@ -17,8 +17,8 @@ export default class TrainerRepository implements ITrainerRepository {
       // TODO: For the future we should also handle schema updates, for now: just ensure the tables are there
       // trainerId = userId
       // traineeId = fletchlingId
-      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`trainer` ( `userId` int not null PRIMARY KEY REFERENCES `'+database+'`.`user` (`id`), `maxTrainees` int not null, `lastTraining` bigint not null, `disposition` varchar(2048) not null, `xp` int not null, `leftoverXp` int not null );');
-      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`trainee` ( `id` int not null PRIMARY KEY, `disposition` varchar(2048) not null, `xp` int not null, `lastTraining` bigint not null );');
+      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`trainer` ( `userId` int not null PRIMARY KEY REFERENCES `'+database+'`.`user` (`id`), `maxTrainees` int not null, `lastTraining` double not null, `disposition` varchar(2048) not null, `xp` int not null, `leftoverXp` int not null );');
+      await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`trainee` ( `id` int not null PRIMARY KEY, `disposition` varchar(2048) not null, `xp` int not null, `lastTraining` double not null );');
       await connection.execute('CREATE TABLE IF NOT EXISTS `'+database+'`.`training` ( `trainerId` int not null REFERENCES `'+database+'`.`trainer` (`userId`), `traineeId` int not null UNIQUE REFERENCES `'+database+'`.`trainee` ( `id` ) );');
     }
     finally {
@@ -116,7 +116,7 @@ export default class TrainerRepository implements ITrainerRepository {
         // TODO: make this more efficient
         console.log(`Training: trainerId: ${trainer.id}, traineeId: ${trainee.id}`);
         await connection.execute(
-          'DELETE FROM `'+this.database+'`.`training` WHERE `trainerId` = ? OR `traineeId` = ?;'
+          'DELETE FROM `training` WHERE `trainerId` = ? OR `traineeId` = ?;'
           [trainer.id, trainee.id]
         );
         console.log(`insert`);
