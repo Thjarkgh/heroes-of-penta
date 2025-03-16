@@ -28,9 +28,9 @@ object MainRepository {
 
   // region TikTok / Auth
 
-  fun exchangeTikTokCode(code: String, callback: (Boolean) -> Unit) {
+  fun exchangeTikTokCode(codeVerifier: String, code: String, callback: (Boolean) -> Unit) {
     // Suppose your endpoint is POST /auth/tiktok-login
-    val request = TikTokLoginRequest(code)
+    val request = TikTokLoginRequest(codeVerifier, code)
     RetrofitClient.instance.tiktokLogin(request).enqueue(object : Callback<LoginResponse> {
       override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
         if (response.isSuccessful) {
@@ -357,7 +357,7 @@ fun createDummyUser() {
   fun uploadSelfie(
     bitmap: Bitmap,
     heroIds: String,
-    onResult: (Boolean) -> Unit
+    onResult: (Throwable?, Int?) -> Unit
   ) {
     // 1) Convert the Bitmap to a JPEG byte array
     val byteStream = ByteArrayOutputStream()
@@ -384,14 +384,15 @@ fun createDummyUser() {
         response: Response<TrainingResponse>
       ) {
         if (response.isSuccessful) {
-          onResult(true)
+          onResult(null, response.body()?.xp ?: 0)
         } else {
-          onResult(false)
+          val exception = response.errorBody()?.toString() ?: "Empty Training Error"
+          onResult(RuntimeException(exception), null)
         }
       }
 
       override fun onFailure(call: Call<TrainingResponse>, t: Throwable) {
-        onResult(false)
+        onResult(t, null)
       }
     })
   }

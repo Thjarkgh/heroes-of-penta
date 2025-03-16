@@ -194,6 +194,16 @@ private fun AccountScreenUI(
         }) {
           Text("Delete Account")
         }
+
+        Button(onClick = {
+          // Clears local token in the repository
+          context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .apply()
+        }) {
+          Text("Logout")
+        }
       }
     }
   )

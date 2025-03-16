@@ -48,7 +48,7 @@ export default class TikTokAuthAdapter implements ITikTokAuthAdapter {
   /**
    * Step 1: Exchange code for a short-lived token.
    */
-  async exchangeToken(code: string): Promise<ExchangeTokenResult> {
+  async exchangeToken(codeVerifier: string, code: string): Promise<ExchangeTokenResult> {
     // const { code, clientId, clientSecret, redirectUri } = props;
     const url = 'https://open.tiktokapis.com/v2/oauth/token/';
     const data = {
@@ -57,7 +57,7 @@ export default class TikTokAuthAdapter implements ITikTokAuthAdapter {
       code, // The authorization code from the web, iOS, Android or desktop authorization callback. The value should be URL decoded.
       grant_type: "authorization_code", // Its value should always be set as authorization_code.
       redirect_uri: this.redirectUri, // Its value must be the same as the redirect_uri used for requesting code.
-      // code_verifier // Required for mobile and desktop app only. Code verifier is used to generate code challenge in PKCE authorization flow.
+      code_verifier: codeVerifier // Required for mobile and desktop app only. Code verifier is used to generate code challenge in PKCE authorization flow.
     };
     
     const response: AxiosResponse<TikTokCodeToTokenResponse> = await axios.post(url, data, { headers: { "Content-Type": "application/x-www-form-urlencoded" }});

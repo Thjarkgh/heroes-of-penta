@@ -35,13 +35,19 @@ class TiktokAuthCallbackActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     //handleIntent(intent)
 
-    val prefs = getSharedPreferences(KEY_CODE_VERIFIER, Context.MODE_PRIVATE)
-    val editor = prefs.edit()
-    editor.putString(KEY_CODE_VERIFIER, PKCEUtils.generateCodeVerifier())
-    editor.apply()
+    if (intent.action == Intent.ACTION_VIEW &&
+      intent.data?.lastPathSegment == "tiktok" &&
+      intent.data?.getQueryParameter("code") != null) {
+      handleIntent(intent)
+    } else {
+      val prefs = getSharedPreferences(KEY_CODE_VERIFIER, Context.MODE_PRIVATE)
+      val editor = prefs.edit()
+      editor.putString(KEY_CODE_VERIFIER, PKCEUtils.generateCodeVerifier())
+      editor.apply()
 
-    val codeVerifier = prefs.getString(KEY_CODE_VERIFIER, "").toString()
-    authorize(codeVerifier)
+      val codeVerifier = prefs.getString(KEY_CODE_VERIFIER, "").toString()
+      authorize(codeVerifier)
+    }
   }
 
   private fun authorize(codeVerifier: String) {
@@ -111,7 +117,7 @@ class TiktokAuthCallbackActivity : AppCompatActivity() {
         // TODO: Verify all necessary permissions were granted!
         // viewModel.updateGrantedScope(it.grantedPermissions)
         // viewModel.getUserBasicInfo(authCode, it.grantedPermissions, codeVerifier)
-        exchangeCodeForToken(authCode)
+        exchangeCodeForToken(codeVerifier, authCode)
       } else if (it.errorCode != 0) {
         val description = if (it.errorMsg != null) {
           getString(
@@ -141,7 +147,7 @@ class TiktokAuthCallbackActivity : AppCompatActivity() {
       }
     }
   }
-  private fun exchangeCodeForToken(code: String) {
+  private fun exchangeCodeForToken(codeVerifier: String, code: String) {
     // Make a network call to your backend, e.g. POST /api/tiktok/login
     // with the code in the request body or query params.
     // The backend calls TikTok’s server to exchange for an access token.
@@ -149,7 +155,7 @@ class TiktokAuthCallbackActivity : AppCompatActivity() {
     // onSuccess:
     // 1. Save token locally (SharedPreferences, etc.)
     // 2. Start MainActivity
-    MainRepository.exchangeTikTokCode(code) { success ->
+    MainRepository.exchangeTikTokCode(codeVerifier, code) { success ->
       if (success) {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)

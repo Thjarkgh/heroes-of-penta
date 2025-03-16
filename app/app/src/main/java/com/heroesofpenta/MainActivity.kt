@@ -2,9 +2,14 @@
 
 package com.heroesofpenta
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.verify.domain.DomainVerificationManager
+import android.content.pm.verify.domain.DomainVerificationUserState
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
@@ -51,6 +56,33 @@ class MainActivity : AppCompatActivity() {
   @OptIn(ExperimentalMaterialNavigationApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    val context: Context = this
+    val manager = context.getSystemService(DomainVerificationManager::class.java)
+    val userState = manager.getDomainVerificationUserState(context.packageName)
+
+//// Domains that have passed Android App Links verification.
+//    val verifiedDomains = userState?.hostToStateMap
+//      ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_VERIFIED }
+//
+//// Domains that haven't passed Android App Links verification but that the user
+//// has associated with an app.
+//    val selectedDomains = userState?.hostToStateMap
+//      ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_SELECTED }
+
+// All other domains.
+    val unapprovedDomains = userState?.hostToStateMap
+      ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_NONE }
+
+    if (unapprovedDomains != null) {
+      if (unapprovedDomains.isNotEmpty()) {
+        val intent = Intent(
+          Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+          Uri.parse("package:${context.packageName}")
+        )
+        context.startActivity(intent)
+      }
+    }
 
     MainRepository.getUser(
       { user ->

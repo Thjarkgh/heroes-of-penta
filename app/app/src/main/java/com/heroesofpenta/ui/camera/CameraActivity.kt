@@ -123,13 +123,13 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
           MainRepository.uploadSelfie(
             bitmap,
             selectedHeroIds.orEmpty()
-          ) { success ->
-            if (success) {
-              Toast.makeText(context, "Selfie uploaded successfully!", Toast.LENGTH_SHORT).show()
+          ) { error, success ->
+            if (error != null) {
+              Toast.makeText(context, "Failed to upload selfie: $error", Toast.LENGTH_LONG).show()
+            } else {
+              Toast.makeText(context, "Selfie uploaded successfully! Got $success XP!", Toast.LENGTH_SHORT).show()
               // Navigate back or show a success screen
               navController.popBackStack()
-            } else {
-              Toast.makeText(context, "Failed to upload selfie.", Toast.LENGTH_SHORT).show()
             }
           }
         }

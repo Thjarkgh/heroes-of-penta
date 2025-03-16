@@ -7,6 +7,6 @@ export interface ExchangeTokenResult {
 }
 
 export default interface ITikTokAuthAdapter {
-  exchangeToken(code: string): Promise<ExchangeTokenResult>;
+  exchangeToken(codeVerifier: string, code: string): Promise<ExchangeTokenResult>;
   refreshToken(refreshToken: string): Promise<ExchangeTokenResult>;
 }

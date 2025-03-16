@@ -28,8 +28,13 @@ export class AuthController {
         res.status(400).json({ error: 'Missing code' });
         return;
       }
+      const codeVerifier = req.body.codeVerifier as string;
+      if (!codeVerifier) {
+        res.status(400).json({ error: "Missing codeVerifier" });
+        return;
+      }
 
-      const userId = await this.userService.handleTikTokCallbackCode(code);
+      const userId = await this.userService.handleTikTokCallbackCode(codeVerifier, code);
 
       const { accessToken, refreshToken } = await this.authService.generateTokens(userId);
 

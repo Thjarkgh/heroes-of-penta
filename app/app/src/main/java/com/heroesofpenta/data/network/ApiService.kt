@@ -16,7 +16,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 // Example request/response data classes
-data class TikTokLoginRequest(val code: String)
+data class TikTokLoginRequest(val codeVerifier: String, val code: String)
 data class LoginResponse(val accessToken: String, val expiresIn: Long)
 data class RefreshTokenResponse(val token: String, val expiresIn: Long)
 data class BasicResponse(val data: String)

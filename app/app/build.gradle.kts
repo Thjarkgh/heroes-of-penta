@@ -79,7 +79,7 @@ android {
     buildConfigField("int", "dummyUserId", dummyUserId)
     buildConfigField("String", "dummyUserToken", dummyUserToken)
     applicationId = "com.heroesofpenta"
-    minSdk = 27
+    minSdk = 31
     targetSdk = 34
     versionCode = 1
     versionName = "1.0"

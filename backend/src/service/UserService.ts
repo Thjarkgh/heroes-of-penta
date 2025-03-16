@@ -62,7 +62,7 @@ export default class UserService {
     const fletchling = await this.fletchlingRepo.getFletchling(nftId);
     return fletchling;
   }
-  
+
   async handleInstagramCallbackCode(code: string) {
     // Example: /connect/instagram?code=abcdefg#_
     if (!code) {
@@ -90,13 +90,13 @@ export default class UserService {
     }
   }
 
-  async handleTikTokCallbackCode(code: string) {
+  async handleTikTokCallbackCode(codeVerifier: string, code: string) {
     // Example: /connect/instagram?code=abcdefg#_
     if (!code) {
       throw new Error(`invalid code ${code}`);
     }
 
-    const tokenResult = await this.tiktok.exchangeToken(code);
+    const tokenResult = await this.tiktok.exchangeToken(codeVerifier, code);
     console.log(JSON.stringify(tokenResult));
 
     // Now decide if we are "registering" or "logging in with token refresh".
