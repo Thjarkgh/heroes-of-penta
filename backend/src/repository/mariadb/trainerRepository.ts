@@ -90,32 +90,44 @@ export default class TrainerRepository implements ITrainerRepository {
     const connection = await this.pool.getConnection();
     try {
       await connection.beginTransaction();
+      console.log(`Trainer: id: ${trainer.id}, maxTrainees: ${trainer.maxTrainees}, lastTraining: ${trainer.lastTraining}, xp: ${trainer.trainerXP}, leftoverXP: ${trainer.leftoverXP}, dispo: ${JSON.stringify(Object.fromEntries(trainer.disposition.disposition.entries()))}`);
       await connection.execute(
         'INSERT INTO `'+this.database+'`.`trainer` ( `userId`, `maxTrainees`, `lastTraining`, `disposition`, `xp`, `leftoverXp` ) SELECT ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`trainer` WHERE `userId` = ?);',
         [ trainer.id, trainer.maxTrainees, trainer.lastTraining, JSON.stringify(Object.fromEntries(trainer.disposition.disposition.entries())), trainer.trainerXP, trainer.leftoverXP, trainer.id ]
       );
+      console.log(`Update`)
       await connection.execute(
         'UPDATE `'+this.database+'`.`trainer` SET `maxTrainees` = ?, `lastTraining` = ? WHERE `userId` = ?;',
         [ trainer.maxTrainees, trainer.lastTraining, trainer.id ]
       );
 
       for (const trainee of trainer.trainees) {
+        console.log(`Trainee: id: ${trainee.id}, xp: ${trainee.xp}, lastTraining: ${trainee.lastTraining}, dispo: ${JSON.stringify(Object.fromEntries(trainee.disposition.disposition.entries()))}`);
         await connection.execute(
           'INSERT INTO `'+this.database+'`.`trainee` ( `id`, `xp`, `disposition`, `lastTraining` ) SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`trainee` WHERE `id` = ?);',
           [trainee.id, trainee.xp, JSON.stringify(Object.fromEntries(trainee.disposition.disposition.entries())), trainee.lastTraining, trainee.id]
         );
+        console.log(`Update`);
         await connection.execute(
           'UPDATE `'+this.database+'`.`trainee` SET `xp` = ?, `disposition` = ?, `lastTraining` = ? WHERE `id` = ?;',
           [trainee.xp, JSON.stringify(Object.fromEntries(trainee.disposition.disposition.entries())), trainee.lastTraining, trainee.id]
         );
 
+        // TODO: make this more efficient
+        console.log(`Training: trainerId: ${trainer.id}, traineeId: ${trainee.id}`);
         await connection.execute(
-          'INSERT INTO `'+this.database+'`.`training` ( `trainerId`, `traineeId` ) SELECT ?, ? WHERE NOT EXISTS (SELECT 0 FORM `'+this.database+'`.`training` WHERE `traineeId` = ?);',
-          [trainer.id, trainee.id, trainee.id]
+          'DELETE FROM `'+this.database+'`.`training` WHERE `trainerId` = ? OR `traineeId` = ?;'
+          [trainer.id, trainee.id]
         );
+        console.log(`insert`);
         await connection.execute(
-          'UPDATE `'+this.database+'`.`training` SET `trainerId` = ? WHERE `traineeId` = ?;', [trainer.id, trainee.id]
+          'INSERT INTO `'+this.database+'`.`training` ( `trainerId`, `traineeId` ) VALUES ( ?, ? );', // SELECT ?, ? WHERE NOT EXISTS (SELECT 0 FROM `'+this.database+'`.`training` WHERE `traineeId` = ?);',
+          [trainer.id, trainee.id] //, trainee.id]
         );
+        // console.log(`update`);
+        // await connection.execute(
+        //   'UPDATE `'+this.database+'`.`training` SET `trainerId` = ? WHERE `traineeId` = ?;', [trainer.id, trainee.id]
+        // );
       }
       await connection.commit();
     }

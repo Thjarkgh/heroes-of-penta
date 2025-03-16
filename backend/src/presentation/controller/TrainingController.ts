@@ -37,6 +37,7 @@ export default class TrainingController {
       // TODO: Typesafety!
       const selectedHeroIds = req.body.selectedHeroIds.toString().split(',').map((p: string) => Number.parseInt(p));
       const result = await this.service.train((req.user as User).id, selectedHeroIds, data);
+      console.log(result);
       res.json(result);
 
     } catch (error: any) {

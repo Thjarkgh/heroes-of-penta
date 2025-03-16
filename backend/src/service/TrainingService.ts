@@ -54,9 +54,11 @@ export default class TrainingService {
     console.log(`Training yielded ${xp}`);
     await this.trainingRepo.save(trainer);
     
+    console.log(`Save ${trainer.trainees.length} trainees (${trainer.traineeCount})`);
     for (const trainee of trainer.trainees) {
       const fletchling = await this.fletchlingRepo.getFletchling(trainee.id);
       if (fletchling.xp !== trainee.xp) {
+        console.log(`update fletchling ${fletchling.id}`);
         fletchling.xp = trainee.xp;
         await this.fletchlingRepo.saveFletchling(fletchling);
       }
