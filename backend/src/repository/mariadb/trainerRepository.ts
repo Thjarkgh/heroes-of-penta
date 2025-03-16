@@ -57,7 +57,8 @@ export default class TrainerRepository implements ITrainerRepository {
       const traineeData = await connection.query<{id:number,xp:number,disposition:string,lastTraining:number}[]>(
         'SELECT `f`.`id`, `f`.`xp`, `f`.`disposition`, `f`.`lastTraining` '+
         'FROM `'+this.database+'`.`training` AS `t` '+
-        'JOIN `'+this.database+'`.`trainee` AS `f` ON `f`.`id` = `t`.`traineeId` WHERE `t`.`userId` = ?;',
+        'JOIN `'+this.database+'`.`trainee` AS `f` ON `f`.`id` = `t`.`traineeId` '+
+        'WHERE `t`.`trainerId` = ?;',
         [userId]
       );
       const trainer = new Trainer(userId, trainerData[0].maxTrainees, trainerData[0].lastTraining, traineeData.map((d) => {
