@@ -114,9 +114,10 @@ export default class TrainerRepository implements ITrainerRepository {
         );
 
         // TODO: make this more efficient
-        console.log(`Training: trainerId: ${trainer.id}, traineeId: ${trainee.id}`);
+        const deleteSqlThatKeepsBugging = 'DELETE `t` FROM `'+this.database+'`.`training` AS `t` WHERE `t`.`trainerId` = ? OR `t`.`traineeId` = ?;';
+        console.log(`Training: trainerId: ${trainer.id}, traineeId: ${trainee.id} :: ${deleteSqlThatKeepsBugging}`);
         await connection.execute(
-          'DELETE `t` FROM `'+this.database+'`.`training` AS `t` WHERE `t`.`trainerId` = ? OR `t`.`traineeId` = ?;'
+          deleteSqlThatKeepsBugging,
           [trainer.id, trainee.id]
         );
         console.log(`insert`);
