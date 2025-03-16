@@ -116,7 +116,7 @@ export default class MentionsService {
               await this.instagram.respond(userId, `[Heroes of Penta XP Bot]: All your heroes are still tired from training, did not train!`);
             } else {
               const disposition = await this.analyzer.analyzeImage(this.query, mediaBuffer);
-              const xp = trainer.train(timestamp, disposition);
+              const xp = trainer.train(timestamp, new Map(Object.entries(disposition)));
               await this.trainerRepo.save(trainer);
               await this.instagram.respond(userId, `[Heroes of Penta XP Bot]: ${xp} XP have been awarded!`);
             }

@@ -18,9 +18,9 @@ export default class TrainingService {
     }
     // TODO: Improve - no domain instantiations in service!
     trainer.setTrainees(heroIds.map((id) => trainer.trainees.find((t) => t.id === id) || new Trainee(id, 0, new Map(), 0)));
-    const result = await this.openAiAdapter.analyzeImage(this.query, data);
-    const reward = trainer.train(ts, result);
+    const disposition = await this.openAiAdapter.analyzeImage(this.query, data);
+    const xp = trainer.train(ts, new Map(Object.entries(disposition)));
     await this.trainingRepo.save(trainer);
-    return reward;
+    return xp;
   }
 }
