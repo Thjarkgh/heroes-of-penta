@@ -11,18 +11,43 @@ export default class OpenAiAdapter implements IOpenAiAdapter {
   }
 
   async analyzeImage(query: string, image: Buffer) {
+    // const result = await this.openai.chat.completions.create({
+    //   model: "gpt-4o-mini",
+    //   messages: [
+    //     {
+    //       role: "user",
+    //       content: [
+    //         { type: "text", text: query },
+    //         { type: "image_url", image_url: { url: `data:image/heic;base64,${image.toString("base64")}` } }
+    //       ]
+    //     }
+    //   ],
+    //   store: false // true to use for training a smaller, cheaper model
+    // });
     const result = await this.openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
+          role: "system",
+          content: [
+            { type: "text", text: query }
+          ]
+        },
+        {
           role: "user",
           content: [
-            { type: "text", text: query },
             { type: "image_url", image_url: { url: `data:image/heic;base64,${image.toString("base64")}` } }
           ]
         }
       ],
-      store: false // true to use for training a smaller, cheaper model
+      response_format: {
+        type: "json_object"
+      },
+      temperature: 1,
+      max_completion_tokens: 2048,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
     });
 
     if (result.choices[0].message.refusal != null) {
