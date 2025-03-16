@@ -116,7 +116,7 @@ export default class TrainerRepository implements ITrainerRepository {
         // TODO: make this more efficient
         console.log(`Training: trainerId: ${trainer.id}, traineeId: ${trainee.id}`);
         await connection.execute(
-          'DELETE FROM `training` WHERE `trainerId` = ? OR `traineeId` = ?;'
+          'DELETE `t` FROM `'+this.database+'`.`training` AS `t` WHERE `t`.`trainerId` = ? OR `t`.`traineeId` = ?;'
           [trainer.id, trainee.id]
         );
         console.log(`insert`);
