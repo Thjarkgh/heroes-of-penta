@@ -97,8 +97,8 @@ export default class TrainerRepository implements ITrainerRepository {
       );
       console.log(`Update`)
       await connection.execute(
-        'UPDATE `'+this.database+'`.`trainer` SET `maxTrainees` = ?, `lastTraining` = ? WHERE `userId` = ?;',
-        [ trainer.maxTrainees, trainer.lastTraining, trainer.id ]
+        'UPDATE `'+this.database+'`.`trainer` SET `maxTrainees` = ?, `lastTraining` = ?, `xp` = ?, `leftoverXp` = ?, `disposition` = ? WHERE `userId` = ?;',
+        [ trainer.maxTrainees, trainer.lastTraining, trainer.trainerXP, trainer.leftoverXP, JSON.stringify(Object.fromEntries(trainer.disposition.disposition.entries())), trainer.id ]
       );
 
       for (const trainee of trainer.trainees) {
@@ -132,7 +132,9 @@ export default class TrainerRepository implements ITrainerRepository {
       await connection.commit();
     }
     catch (err) {
+      console.log(err);
       await connection.rollback();
+      throw err;
     }
     finally {
       await connection.release();
