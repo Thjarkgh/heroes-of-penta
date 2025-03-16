@@ -82,6 +82,7 @@ export default class Trainer {
 
   train(timestamp: number, disposition: Map<string, number>) {
     let xpGain = 0;
+    console.log(`${timestamp} <= ${Date.now()}`);
     if (timestamp > Date.now()) {
       throw new Error(`Can't train in the future`);
     }
@@ -89,8 +90,9 @@ export default class Trainer {
       throw new Error(`Still on break`);
     }
 
+    const trainerXp = this._disposition.addDisposition(disposition);
     if (this._trainees.length === 0) {
-      xpGain += this._disposition.addDisposition(disposition);
+      xpGain = trainerXp;
       this._leftoverXP += xpGain;
     } else {
       for (const trainee of this.trainees) {
