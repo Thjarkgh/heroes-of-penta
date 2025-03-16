@@ -31,6 +31,7 @@ export default class TrainingService {
       }
     }
     const disposition = await this.openAiAdapter.analyzeImage(this.query, data);
+    console.log(JSON.stringify(disposition));
     const dispositions = Object.entries(disposition);
     if (dispositions.length < 1) {
       throw new Error(`empty dispositions!`);
@@ -50,6 +51,7 @@ export default class TrainingService {
     }
 
     const xp = trainer.train(ts, new Map(dispositions));
+    console.log(`Training yielded ${xp}`);
     await this.trainingRepo.save(trainer);
     
     for (const trainee of trainer.trainees) {
