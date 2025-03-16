@@ -1,6 +1,6 @@
 import Disposition from "./Disposition";
 
-const minBreakTime = 6 * 60 * 60 * 1000; // 6h
+const minBreakTime = 60 * 1000; // 1 min for testing 6 * 60 * 60 * 1000; // 6h
 
 export default class Trainee {
   constructor(
