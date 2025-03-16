@@ -1,4 +1,4 @@
-import { BytesLike, encodeBytes32String, ethers } from "ethers"
+import { BytesLike, Contract, encodeBytes32String, ethers } from "ethers"
 import Wallet from "../../domain/entities/walletAggregate/Wallet";
 import IFletchlingRepository from "../../service/IFletchlingRepository";
 import Fletchling from "../../domain/entities/heroAggregate/Fletchling";
@@ -6,13 +6,16 @@ import Fletchling from "../../domain/entities/heroAggregate/Fletchling";
 
 export default class FletchlingRepository implements IFletchlingRepository {
   private readonly contract: ethers.Contract;
+  private readonly signer: ethers.Signer;
 
 
   constructor(
     rpcUrl: string,
+    pk: string,
     contractAddress: string
   ) {
     const provider = new ethers.JsonRpcProvider(rpcUrl);
+    this.signer = new ethers.Wallet(pk, provider);
     const abi = [
       "error AccessControlBadConfirmation()",
       "error AccessControlUnauthorizedAccount(address account, bytes32 neededRole)",
@@ -137,5 +140,14 @@ export default class FletchlingRepository implements IFletchlingRepository {
       xp: Number.parseInt(dynValues[1], 16),
       imageUrl: `https://ipfs.io/ipfs/${fletchlingInfo.image.substring(7)}`
     };
+  }
+
+  async saveFletchling(fletchling: Fletchling): Promise<void> {
+    // for now we are only interested in xp and name
+    const contractRw: Contract = this.contract.connect(this.signer) as Contract;
+    const oldFletchling = await this.getFletchling(fletchling.id);
+    if (oldFletchling.xp !== fletchling.xp) {
+      await contractRw.addXp(fletchling.id, fletchling.xp - oldFletchling.xp);
+    }
   }
 }

@@ -1,10 +1,12 @@
 import ITrainerRepository from "../domain/entities/heroAggregate/ITrainerRepository";
 import Trainee from "../domain/entities/heroAggregate/Trainee";
+import IFletchlingRepository from "./IFletchlingRepository";
 import IOpenAiAdapter from "./IOpenAiAdapter";
 
 export default class TrainingService {
   constructor(
     private readonly trainingRepo: ITrainerRepository,
+    private readonly fletchlingRepo: IFletchlingRepository,
     private readonly openAiAdapter: IOpenAiAdapter,
     private readonly query: string
   ) {}
@@ -21,6 +23,12 @@ export default class TrainingService {
     const disposition = await this.openAiAdapter.analyzeImage(this.query, data);
     const xp = trainer.train(ts, new Map(Object.entries(disposition)));
     await this.trainingRepo.save(trainer);
+    
+    for (const heroId of heroIds) {
+      const fletchling = await this.fletchlingRepo.getFletchling(heroId);
+      fletchling.xp += xp;
+      await this.fletchlingRepo.saveFletchling(fletchling);
+    }
     return xp;
   }
 }

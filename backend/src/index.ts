@@ -112,7 +112,7 @@ const start = async () => {
   const tikTokAdapter = new TikTokAuthAdapter(getEnvVarOrThrow("TIKTOK_CLIENT_KEY"), getEnvVarOrThrow("TIKTOK_CLIENT_SECRET"), "https://heroesofpenta.com/auth/login/tiktok");
   const userRepo = await UserRepository.createWithPool(pool, database);
   const walletRepo = new WalletRepository("https://sepolia-rpc.scroll.io/", `0x${getEnvVarOrThrow("ACCOUNT_REGISTER_ADDRESS")}`);
-  const fletchlingRepo = new FletchlingRepository("https://sepolia-rpc.scroll.io/", `0x${getEnvVarOrThrow("FLETCHLING_NFT_ADDRESS")}`);
+  const fletchlingRepo = new FletchlingRepository("https://sepolia-rpc.scroll.io/", `0x${getEnvVarOrThrow("SERVER_WALLET_PK")}`, `0x${getEnvVarOrThrow("FLETCHLING_NFT_ADDRESS")}`);
   const userService = new UserService(userRepo, instagramAdapter, tikTokAdapter, walletRepo, fletchlingRepo);
   const userController = new UserController(userService);
 
@@ -134,7 +134,7 @@ const start = async () => {
 
   const dataDeletionController = new DataDeletionController(appSecret);
 
-  const trainingService = new TrainingService(trainerRepo, openAI, query);
+  const trainingService = new TrainingService(trainerRepo, fletchlingRepo, openAI, query);
   const trainingController = new TrainingController(trainingService);
 
 
