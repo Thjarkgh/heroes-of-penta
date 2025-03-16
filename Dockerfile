@@ -48,6 +48,6 @@ RUN npm ci --omit dev
 COPY --from=build --chown=node:node /home/node/app/www /home/node/app/www
 COPY --from=build --chown=node:node /home/node/app/build /home/node/app/build
 COPY --from=build --chown=node:node /home/node/app/query.txt /home/node/app/query.txt
-COPY --from=build --chown=node:node /home/node/app/dispositionMap.json /home/node/dispositionMap.json
+COPY --from=build --chown=node:node /home/node/app/dispositionMap.json /home/node/app/dispositionMap.json
 
 ENTRYPOINT [ "node", "/home/node/app/build/index.js"  ]
