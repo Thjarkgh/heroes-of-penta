@@ -38,6 +38,7 @@ export default class OpenAiAdapter implements IOpenAiAdapter {
     }
 
     if (!resultString.startsWith("json")) {
+      console.log(result);
       throw new Error(`Expected JSON result, got ${resultString.substring(0, 10)}`);
     }
     resultString = resultString.substring(4).trim();
