@@ -42,6 +42,7 @@ export class AuthController {
       this.setRefreshTokenCookie(res, refreshToken);
       res.json({ accessToken });
     } catch (e: any) {
+      console.log(e);
       res.status(500).json({ error: e.message });
     }
   }
