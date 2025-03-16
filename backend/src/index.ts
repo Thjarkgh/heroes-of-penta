@@ -122,6 +122,7 @@ const start = async () => {
   const openAI = OpenAiAdapter.build(getEnvVarOrThrow("OPENAI_API_KEY"));
   const instagramMessenger = new InstagramMessageAdapter(getEnvVarOrThrow("INSTAGRAM_USER_ID"), getEnvVarOrThrow("INSTAGRAM_USER_TOKEN"));
   const query = readFileSync(getEnvVarOrThrow("QUERY_FILE_PATH"), "utf8");
+  const phrases = JSON.parse(readFileSync(getEnvVarOrThrow("DISPO_FILE_PATH"), "utf8"));
   const mentionsService = new MentionsService(trainerRepo, userRepo, openAI, instagramMessenger, query);
   const appSecret = getEnvVarOrThrow("INSTAGRAM_APP_SECRET");
   const msgSecret = getEnvVarOrThrow("INSTAGRAM_MSG_SECRET");
@@ -134,7 +135,7 @@ const start = async () => {
 
   const dataDeletionController = new DataDeletionController(appSecret);
 
-  const trainingService = new TrainingService(trainerRepo, fletchlingRepo, openAI, query);
+  const trainingService = new TrainingService(trainerRepo, fletchlingRepo, openAI, query, phrases);
   const trainingController = new TrainingController(trainingService);
 
 

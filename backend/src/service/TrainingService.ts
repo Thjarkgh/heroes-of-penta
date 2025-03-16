@@ -7,7 +7,8 @@ export default class TrainingService {
     private readonly trainingRepo: ITrainerRepository,
     private readonly fletchlingRepo: IFletchlingRepository,
     private readonly openAiAdapter: IOpenAiAdapter,
-    private readonly query: string
+    private readonly query: string,
+    private readonly dispoPhrases: {[key: string]: string}
   ) {}
 
   async train(userId: number, heroIds: number[], data: Buffer) {
@@ -30,7 +31,25 @@ export default class TrainingService {
       }
     }
     const disposition = await this.openAiAdapter.analyzeImage(this.query, data);
-    const xp = trainer.train(ts, new Map(Object.entries(disposition)));
+    const dispositions = Object.entries(disposition);
+    if (dispositions.length < 1) {
+      throw new Error(`empty dispositions!`);
+    }
+    if (dispositions.length != 25) {
+      console.log(`Weird, only got ${dispositions.length} dispositions: ${JSON.stringify(disposition)}`);
+    }
+    let highestDisposition: [string, number] = dispositions[0];
+    for (const dispo of dispositions) {
+      if (dispo[1] > highestDisposition[1]) {
+        highestDisposition = dispo;
+      }
+    }
+    const phrase = this.dispoPhrases[highestDisposition[0]] || "You nailed it!";
+    if (phrase === "You nailed it!") {
+      console.log(`Highest scoring disposition not found in phrases: ${highestDisposition[0]}`);
+    }
+
+    const xp = trainer.train(ts, new Map(dispositions));
     await this.trainingRepo.save(trainer);
     
     for (const trainee of trainer.trainees) {
@@ -40,6 +59,6 @@ export default class TrainingService {
         await this.fletchlingRepo.saveFletchling(fletchling);
       }
     }
-    return xp;
+    return { xp, phrase };
   }
 }
