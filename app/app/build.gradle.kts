@@ -227,8 +227,12 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core)
   // Define a BOM and its version
   implementation(libs.accompanist.navigation.material)
+  implementation(libs.accompanist.permissions)
   //implementation(libs.ethers.bom)
 
+
+  // (Optional) If you want to use Accompanist placeholders:
+  implementation(libs.accompanist.placeholder.material)
   // Define any required artifacts without version
 //  implementation(libs.ethers.abi)
 //  implementation(libs.ethers.core)

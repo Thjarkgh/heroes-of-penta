@@ -1,5 +1,8 @@
 package com.heroesofpenta.ui.main
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import com.heroesofpenta.data.network.createIpfsImageLoader
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -7,12 +10,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.heroesofpenta.R
 import com.heroesofpenta.data.models.NftHero
 import com.heroesofpenta.data.repository.MainRepository
 
@@ -59,47 +70,119 @@ fun NftDetailScreen(
 
 @Composable
 fun HeroDetailContent(hero: NftHero) {
-  Column(
+  val context = LocalContext.current
+  val customLoader = remember { createIpfsImageLoader(context) }
+
+  val enchantedLandFont = FontFamily(Font(R.font.enchanted_land))
+
+  val displayName = hero.name
+
+  // The original image is 768x1024 => aspect ratio = 3:4 = 0.75
+  val aspectRatio = 3f / 4f
+  // Wrap everything in a Box so we can have a background layer
+  Box(
     modifier = Modifier
       .fillMaxSize()
-      .padding(16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    // Load hero image using Coil
-    AsyncImage(
-      model = ImageRequest.Builder(LocalContext.current)
-        .data(hero.imageUrl)
-        .crossfade(true)
-        .build(),
-      contentDescription = "Hero Image",
+    // 1) Background Image
+    Image(
+      painter = painterResource(R.drawable.bg_hero_detail), // your background drawable
+      contentDescription = null,
       modifier = Modifier
-        .fillMaxWidth()
-        .height(200.dp)
+        .matchParentSize(), // fill the entire box
+      contentScale = ContentScale.Crop // crop to fill the screen
+      // optional .alpha(0.5f) if you want a translucent background
     )
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp),
+      //    horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      // Row at the top: name (center) + XP (right)
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        // 2a) Name: centered in the row, but we do a Spacer on the left
+        Spacer(modifier = Modifier.weight(1f)) // empty left space
 
-    Spacer(modifier = Modifier.height(16.dp))
+        Text(
+          text = displayName,
+          fontFamily = enchantedLandFont,
+          fontSize = 32.sp, // or whatever size suits you
+          modifier = Modifier.weight(2f),
+          textAlign = TextAlign.Center,
+          color = Color.White
+        )
 
-    Text(
-      text = hero.name,
-      modifier = Modifier.fillMaxWidth(),
-      textAlign = TextAlign.Center
-    )
+        // 2b) XP: smaller, on the right
+        Text(
+          text = "XP: ${hero.xp}",
+          fontSize = 14.sp,
+          modifier = Modifier.weight(1f),
+          textAlign = TextAlign.End,
+          color = Color.White
+        )
+      }
 
-    Spacer(modifier = Modifier.height(8.dp))
+      // 3) The image area in the middle, with golden border
+      //    The aspect ratio ~ 3:4 for your 768x1024 images
+      Box(
+        modifier = Modifier
+          .fillMaxWidth()
+          .weight(1f),  // take up most vertical space
+        contentAlignment = Alignment.Center
+      ) {
+        //      AspectRatio(ratio = aspectRatio) {
+        // A bit of padding if you want a "border-like" space around the image
+        Box(
+          modifier = Modifier
+            .aspectRatio(ratio = aspectRatio)
+            .fillMaxSize()
+            .border(
+              width = 2.dp,
+              color = androidx.compose.ui.graphics.Color(0xFFFFD700)
+            )
+            .padding(4.dp), // small inner padding so the border is visible
+          contentAlignment = Alignment.Center
+        ) {
+          AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+              .data(hero.imageUrl)
+              .crossfade(true)
+              .listener(
+                onError = { _, result ->
+                  // Print the error
+                  println("Coil error: ${result.throwable}")
+                }
+              )
+              .build(),
+            contentDescription = "Hero Image",
+            imageLoader = customLoader,
+            modifier = Modifier.fillMaxSize(),
+            // For a letterbox approach that keeps ratio, you can use `ContentScale.Fit`
+            // or `ContentScale.Contain`
+            contentScale = ContentScale.Fit,
+            error = painterResource(id = R.drawable.ic_broken_image)
+          )
+        }
+        // }
+      }
 
-    Text(
-      text = "XP: ${hero.xp}",
-      modifier = Modifier.fillMaxWidth(),
-      textAlign = TextAlign.Center
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Text(
-      text = hero.description ?: "",
-      modifier = Modifier.fillMaxWidth(),
-      textAlign = TextAlign.Center
-    )
+      // 4) Description below the image, centered horizontally
+      Text(
+        text = hero.description.orEmpty(),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 16.dp),
+        textAlign = TextAlign.Center,
+        color = Color.White,
+        fontSize = 14.sp
+      )
+    }
   }
 }
 
