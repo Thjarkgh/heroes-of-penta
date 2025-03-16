@@ -26,7 +26,14 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
+import android.Manifest
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
   val context = LocalContext.current
@@ -34,12 +41,38 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
 
   // We'll store the captured bitmap in state
   var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
+  var canShootSelfie by remember { mutableStateOf<Boolean>(false) }
 
   // Set up a launcher for taking a picture preview
   val takePictureLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.TakePicturePreview()
   ) { bitmap: Bitmap? ->
     capturedBitmap = bitmap
+  }
+
+  val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+  val requestPermissionLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.RequestPermission()
+  ) { isGranted ->
+    if (isGranted) {
+      // Permission granted
+      canShootSelfie = true;
+    } else {
+      // Handle permission denial
+      canShootSelfie = false;
+    }
+  }
+
+  LaunchedEffect(cameraPermissionState) {
+    if (!cameraPermissionState.status.isGranted && cameraPermissionState.status.shouldShowRationale) {
+      // Show rationale if needed
+//      Text(
+//        text = "You cannot play without a camera.",
+//        modifier = Modifier.padding(all = 8.dp)
+//      )
+    } else {
+      requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+    }
   }
 
   Column(
@@ -55,9 +88,12 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
     )
 
     // Button to open the camera
-    Button(onClick = {
-      takePictureLauncher.launch(null)
-    }) {
+    Button(
+      enabled = canShootSelfie,
+      onClick = {
+        takePictureLauncher.launch(null)
+      }
+    ) {
       Text("Take Selfie")
     }
 
