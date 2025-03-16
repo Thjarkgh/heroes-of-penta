@@ -336,6 +336,8 @@ fun createDummyUser() {
   fun checkTrainingCooldown(callback: (Boolean) -> Unit) {
     // e.g. GET /api/training/status
     // callback(true) if can train, false if on cooldown
+    // TODO: Implement for production => fetch from server
+    callback(true)
   }
 
 //    private fun getStoredToken(): String {
