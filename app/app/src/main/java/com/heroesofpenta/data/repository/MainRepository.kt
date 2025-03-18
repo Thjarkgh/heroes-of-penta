@@ -357,7 +357,7 @@ fun createDummyUser() {
   fun uploadSelfie(
     bitmap: Bitmap,
     heroIds: String,
-    onResult: (Throwable?, Int?) -> Unit
+    onResult: (Throwable?, TrainingResponse?) -> Unit
   ) {
     // 1) Convert the Bitmap to a JPEG byte array
     val byteStream = ByteArrayOutputStream()
@@ -384,7 +384,7 @@ fun createDummyUser() {
         response: Response<TrainingResponse>
       ) {
         if (response.isSuccessful) {
-          onResult(null, response.body()?.xp ?: 0)
+          onResult(null, response.body() ?: TrainingResponse(0, "Better luck next time!"))
         } else {
           val exception = response.errorBody()?.toString() ?: "Empty Training Error"
           onResult(RuntimeException(exception), null)

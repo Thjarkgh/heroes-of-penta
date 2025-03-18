@@ -20,7 +20,7 @@ data class TikTokLoginRequest(val codeVerifier: String, val code: String)
 data class LoginResponse(val accessToken: String, val expiresIn: Long)
 data class RefreshTokenResponse(val token: String, val expiresIn: Long)
 data class BasicResponse(val data: String)
-data class TrainingResponse(val xp: Int)
+data class TrainingResponse(val xp: Int, val phrase: String)
 
 interface ApiService {
     // 1) Get current user info

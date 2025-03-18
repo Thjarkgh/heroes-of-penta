@@ -27,13 +27,24 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import android.Manifest
+import android.graphics.Matrix
+import android.media.ExifInterface
+import androidx.camera.core.impl.utils.MatrixExt.postRotate
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
+import java.io.File
 
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
   val context = LocalContext.current
@@ -42,6 +53,13 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
   // We'll store the captured bitmap in state
   var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
   var canShootSelfie by remember { mutableStateOf<Boolean>(false) }
+
+  // State for showing a dialog (and controlling its content)
+  var dialogMessage by remember { mutableStateOf<String?>(null) }
+  var showLoading by remember { mutableStateOf(false) } // do we show the swirl?
+
+  // Keep track of whether the button is enabled
+  var isButtonEnabled by remember { mutableStateOf(true) }
 
   // Set up a launcher for taking a picture preview
   val takePictureLauncher = rememberLauncherForActivityResult(
@@ -101,46 +119,169 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
 
     // If we have a bitmap, preview it and show an upload button
     capturedBitmap?.let { bitmap ->
-      // Simple image preview using Coil’s AsyncImage or ImageBitmap conversion
-      // Here, we convert the Bitmap to a Coil ImageRequest
-      val imageRequest = ImageRequest.Builder(context)
-        .data(bitmap) // Pass the Bitmap directly
-        .build()
-
-      Image(
-        painter = rememberAsyncImagePainter(model = imageRequest),
-        contentDescription = "Selfie Preview",
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(300.dp)
-      )
+      val rotatedBitmap = forcePortraitIfNeeded(bitmap)
+      ImagePreview(bitmap = rotatedBitmap)
+//      // Simple image preview using Coil’s AsyncImage or ImageBitmap conversion
+//      // Here, we convert the Bitmap to a Coil ImageRequest
+//      val imageRequest = ImageRequest.Builder(context)
+//        .data(bitmap) // Pass the Bitmap directly
+//        .build()
+//
+//      Image(
+//        painter = rememberAsyncImagePainter(model = imageRequest),
+//        contentDescription = "Selfie Preview",
+//        modifier = Modifier
+//          .fillMaxWidth()
+//          .height(300.dp)
+//      )
 
       Spacer(modifier = Modifier.height(16.dp))
 
       Button(onClick = {
-        // Upload the captured selfie in a coroutine
+        // 1) Show loading swirl, show dialog, disable button
+        showLoading = true
+        dialogMessage = "Uploading your selfie, please wait..."
+        isButtonEnabled = false
+
+        // 2) Launch a coroutine that attempts the upload
         coroutineScope.launch {
-          MainRepository.uploadSelfie(
-            bitmap,
-            selectedHeroIds.orEmpty()
-          ) { error, success ->
-            if (error != null) {
-              Toast.makeText(context, "Failed to upload selfie: $error", Toast.LENGTH_LONG).show()
-            } else {
-              Toast.makeText(context, "Selfie uploaded successfully! Got $success XP!", Toast.LENGTH_SHORT).show()
-              // Navigate back or show a success screen
-              navController.popBackStack()
+          // We'll use a 10-second timeout. If the server
+          // doesn't respond, we show a timed-out message.
+          val result = withTimeoutOrNull(10_000) {
+            // Our repository callback-based method
+            suspendCancellableCoroutine { cont ->
+              MainRepository.uploadSelfie(bitmap, selectedHeroIds.orEmpty()) { error, success ->
+                cont.resume(Pair(error, success)) {}
+              }
             }
           }
+
+          // 3) Hide the swirl
+          showLoading = false
+
+          // 4) Evaluate the result
+          if (result == null) {
+            // Timed out
+            dialogMessage = "Server took too long. Please try again."
+          } else {
+            val (error, success) = result
+            if (error != null) {
+              dialogMessage = "Failed to upload selfie:\n$error"
+            } else if (success == null) {
+              dialogMessage = "Error: got neither success nor error."
+            } else {
+              dialogMessage = "Congrats!\n${success.phrase}\nYou earned ${success.xp} XP!"
+            }
+          }
+
+          // Re-enable the button
+          isButtonEnabled = true
         }
       }) {
         Text("Upload Selfie")
       }
     }
+
+    // Optional: show the swirling progress while uploading
+    if (showLoading) {
+      Spacer(modifier = Modifier.height(16.dp))
+      CircularProgressIndicator()
+    }
+  }
+
+  // Show a “popup” dialog if dialogMessage != null
+  if (dialogMessage != null) {
+    CustomPopupDialog(
+      message = dialogMessage!!,
+      onDismiss = {
+        dialogMessage = null
+        // If success, you might navigate here
+        if (!showLoading && dialogMessage?.contains("Congrats!") == true) {
+          navController.popBackStack()
+        }
+      }
+    )
   }
 }
 
+/**
+ * If the bitmap is in "landscape" orientation, rotate it 90°.
+ * This forcibly displays it in portrait.
+ */
+fun forcePortraitIfNeeded(original: Bitmap): Bitmap {
+  return if (original.width > original.height) {
+    // Create a Matrix that will rotate the image by 90 degrees
+    val matrix = Matrix().apply {
+      postRotate(-90f)
+    }
+    // Use the matrix to create a new, correctly-oriented Bitmap
+    Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
+  } else {
+    original
+  }
+}
 
+fun rotateBitmapFromFile(original: Bitmap, file: File): Bitmap {
+  val exif = ExifInterface(file.absolutePath)
+  val orientation = exif.getAttributeInt(
+    ExifInterface.TAG_ORIENTATION,
+    ExifInterface.ORIENTATION_NORMAL
+  )
+
+  val rotationDegrees = when (orientation) {
+    ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+    ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+    ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+    else -> 0f
+  }
+
+  if (rotationDegrees != 0f) {
+    val matrix = Matrix().apply { postRotate(rotationDegrees) }
+    return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
+  } else {
+    return original
+  }
+}
+
+// Simple composable to preview the captured bitmap
+@Composable
+fun ImagePreview(bitmap: Bitmap) {
+  Box(
+    modifier = Modifier
+      .fillMaxWidth()
+      .height(300.dp),
+    contentAlignment = Alignment.Center
+  ) {
+    Image(
+      bitmap = bitmap.asImageBitmap(),
+      contentDescription = "Selfie Preview",
+      modifier = Modifier.fillMaxSize(),
+      contentScale = ContentScale.Fit
+    )
+  }
+}
+
+@Composable
+fun CustomPopupDialog(
+  message: String,
+  onDismiss: () -> Unit
+) {
+  AlertDialog(
+    onDismissRequest = { onDismiss() }, // triggered if user taps outside or back button
+    title = { Text("Information") },
+    text = {
+      Text(message)
+    },
+    confirmButton = {
+      Button(onClick = { onDismiss() }) {
+        Text("OK")
+      }
+    },
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(16.dp) // to ensure a bit of margin
+  )
+}
 
 //import android.net.Uri
 //import android.os.Bundle
