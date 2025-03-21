@@ -94,6 +94,14 @@ android {
         getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro"
       )
+      kotlinOptions {
+        freeCompilerArgs = listOf("-Xcontext-receivers")
+      }
+    }
+    debug {
+      kotlinOptions {
+        freeCompilerArgs = listOf("-Xdebug", "-Xcontext-receivers")
+      }
     }
   }
   compileOptions {
@@ -112,7 +120,6 @@ android {
   }
   kotlinOptions {
     jvmTarget = "11"
-    freeCompilerArgs = listOf("-Xcontext-receivers")
   }
   externalNativeBuild {
     cmake {
