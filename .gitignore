@@ -147,3 +147,11 @@ deploy/vhconf.conf.txt
 deploy/vhconf.conf0
 
 contracts/ignition/deployments/
+
+backend/src/adapter/openAiPlayground.ts
+
+backend/x.txt
+
+dispositionMap.json
+
+query.txt

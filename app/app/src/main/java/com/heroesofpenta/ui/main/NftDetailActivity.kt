@@ -144,7 +144,7 @@ fun HeroDetailContent(hero: NftHero) {
             .fillMaxSize()
             .border(
               width = 2.dp,
-              color = androidx.compose.ui.graphics.Color(0xFFFFD700)
+              color = Color(0xFFFFD700)
             )
             .padding(4.dp), // small inner padding so the border is visible
           contentAlignment = Alignment.Center

@@ -2,11 +2,11 @@ package com.heroesofpenta.data.network
 
 import android.content.Context
 import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.compose.AsyncImage
+//import coil.request.ImageRequest
+//import coil.compose.AsyncImage
 import okhttp3.OkHttpClient
-import okhttp3.Interceptor
-import okhttp3.Response
+//import okhttp3.Interceptor
+//import okhttp3.Response
 
 fun createIpfsImageLoader(context: Context): ImageLoader {
   // 1) Build a custom OkHttp client

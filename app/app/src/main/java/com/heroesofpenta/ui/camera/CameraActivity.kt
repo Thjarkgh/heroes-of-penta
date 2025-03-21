@@ -1,7 +1,7 @@
 package com.heroesofpenta.ui.camera
 
 import android.graphics.Bitmap
-import android.widget.Toast
+// import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -14,22 +14,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
+//import coil.compose.rememberAsyncImagePainter
+//import coil.compose.rememberImagePainter
+//import coil.request.ImageRequest
 import com.heroesofpenta.data.repository.MainRepository
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.ByteArrayOutputStream
+//import okhttp3.MediaType.Companion.toMediaTypeOrNull
+//import okhttp3.MultipartBody
+//import okhttp3.OkHttpClient
+//import okhttp3.Request
+//import okhttp3.RequestBody
+//import okhttp3.RequestBody.Companion.toRequestBody
+//import java.io.ByteArrayOutputStream
 import android.Manifest
 import android.graphics.Matrix
-import android.media.ExifInterface
-import androidx.camera.core.impl.utils.MatrixExt.postRotate
+import androidx.exifinterface.media.ExifInterface
+//import androidx.camera.core.impl.utils.MatrixExt.postRotate
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.ui.graphics.asImageBitmap
@@ -52,7 +52,7 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
 
   // We'll store the captured bitmap in state
   var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
-  var canShootSelfie by remember { mutableStateOf<Boolean>(false) }
+  var canShootSelfie by remember { mutableStateOf(false) }
 
   // State for showing a dialog (and controlling its content)
   var dialogMessage by remember { mutableStateOf<String?>(null) }
@@ -74,10 +74,10 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
   ) { isGranted ->
     if (isGranted) {
       // Permission granted
-      canShootSelfie = true;
+      canShootSelfie = true
     } else {
       // Handle permission denial
-      canShootSelfie = false;
+      canShootSelfie = false
     }
   }
 
@@ -160,17 +160,17 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
           showLoading = false
 
           // 4) Evaluate the result
-          if (result == null) {
+          dialogMessage = if (result == null) {
             // Timed out
-            dialogMessage = "Server took too long. Please try again."
+            "Server took too long. Please try again."
           } else {
             val (error, success) = result
             if (error != null) {
-              dialogMessage = "Failed to upload selfie:\n$error"
+              "Failed to upload selfie:\n$error"
             } else if (success == null) {
-              dialogMessage = "Error: got neither success nor error."
+              "Error: got neither success nor error."
             } else {
-              dialogMessage = "Congrats!\n${success.phrase}\nYou earned ${success.xp} XP!"
+              "Congrats!\n${success.phrase}\nYou earned ${success.xp} XP!"
             }
           }
 

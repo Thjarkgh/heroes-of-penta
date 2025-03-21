@@ -1,13 +1,13 @@
 package com.heroesofpenta.data.repository
 
 import android.graphics.Bitmap
-import android.net.Uri
+//import android.net.Uri
 import com.heroesofpenta.BuildConfig
 import com.heroesofpenta.data.models.DeleteResponse
 import com.heroesofpenta.data.models.NftHero
-import com.heroesofpenta.data.models.NonceResponse
+//import com.heroesofpenta.data.models.NonceResponse
 import com.heroesofpenta.data.models.User
-import com.heroesofpenta.data.models.WalletResponse
+//import com.heroesofpenta.data.models.WalletResponse
 import com.heroesofpenta.data.network.BasicResponse
 import com.heroesofpenta.data.network.LoginResponse
 import com.heroesofpenta.data.network.RetrofitClient
@@ -15,8 +15,8 @@ import com.heroesofpenta.data.network.TikTokLoginRequest
 import com.heroesofpenta.data.network.TrainingResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
+//import okhttp3.OkHttpClient
+//import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
