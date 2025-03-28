@@ -123,29 +123,29 @@ fun createDummyUser() {
 
   // region Wallet
 
-  /**
-   * 2. Request a nonce for wallet signing
-   */
-  fun getNonceForWallet(callback: (String?) -> Unit) {
-//        val token = getStoredToken() ?: run {
+//  /**
+//   * 2. Request a nonce for wallet signing
+//   */
+//  fun getNonceForWallet(callback: (String?) -> Unit) {
+////        val token = getStoredToken() ?: run {
+////            callback(null)
+////            return
+////        }
+//    RetrofitClient.instance.getNonceForWallet()//"Bearer $token")
+//      .enqueue(object : Callback<NonceResponse> {
+//        override fun onResponse(call: Call<NonceResponse>, response: Response<NonceResponse>) {
+//          if (response.isSuccessful) {
+//            callback(response.body()?.nonce)
+//          } else {
 //            callback(null)
-//            return
+//          }
 //        }
-    RetrofitClient.instance.getNonceForWallet()//"Bearer $token")
-      .enqueue(object : Callback<NonceResponse> {
-        override fun onResponse(call: Call<NonceResponse>, response: Response<NonceResponse>) {
-          if (response.isSuccessful) {
-            callback(response.body()?.nonce)
-          } else {
-            callback(null)
-          }
-        }
-
-        override fun onFailure(call: Call<NonceResponse>, t: Throwable) {
-          callback(null)
-        }
-      })
-  }
+//
+//        override fun onFailure(call: Call<NonceResponse>, t: Throwable) {
+//          callback(null)
+//        }
+//      })
+//  }
 
   /**
    * 3. Register wallet with signature
@@ -328,11 +328,11 @@ fun createDummyUser() {
       })
   }
 
-  fun postSelfieToTikTok(heroIds: Array<String>?, uri: Uri, callback: (Boolean) -> Unit) {
-    // 1. Convert the selfie to multipart
-    // 2. POST /api/training
-    // 3. On success => callback(true)
-  }
+//  fun postSelfieToTikTok(heroIds: Array<String>?, uri: Uri, callback: (Boolean) -> Unit) {
+//    // 1. Convert the selfie to multipart
+//    // 2. POST /api/training
+//    // 3. On success => callback(true)
+//  }
 
   fun checkTrainingCooldown(callback: (Boolean) -> Unit) {
     // e.g. GET /api/training/status
