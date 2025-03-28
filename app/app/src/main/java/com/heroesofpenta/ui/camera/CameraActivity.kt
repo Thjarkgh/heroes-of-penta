@@ -194,11 +194,12 @@ fun CameraScreen(selectedHeroIds: String?, navController: NavController) {
     CustomPopupDialog(
       message = dialogMessage!!,
       onDismiss = {
-        dialogMessage = null
         // If success, you might navigate here
         if (!showLoading && dialogMessage?.contains("Congrats!") == true) {
+          dialogMessage = null
           navController.popBackStack()
         }
+        dialogMessage = null
       }
     )
   }
