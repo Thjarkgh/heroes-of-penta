@@ -42,6 +42,8 @@ androidxDatastore = "1.1.1"
 androidxNavigation = "2.8.0"
 composeBOM="2024.05.00"
 timber = "5.0.1"
+web3j = "4.9.8-hotfix"
+
 
 [libraries]
 accompanist-navigation-material = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanistNavigationMaterial" }
@@ -66,6 +68,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 reown-android-bom = { module = "com.reown:android-bom", version.ref = "androidBom" }
 reown-android-core = { module = "com.reown:android-core" }
 reown-appkit = { module = "com.reown:appkit" }
+reown-signkit = { module = "com.reown:sign" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 tiktok-open-sdk-auth = { module = "com.tiktok.open.sdk:tiktok-open-sdk-auth", version.ref = "tiktokOpenSdkAuth" }
 tiktok-open-sdk-core = { module = "com.tiktok.open.sdk:tiktok-open-sdk-core", version.ref = "tiktokOpenSdkCore" }
@@ -97,6 +100,8 @@ androidx-compose-material-icons-core = { module = "androidx.compose.material:mat
 #ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 #ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+web3jCrypto = { module = "org.web3j:crypto", version.ref = "web3j" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

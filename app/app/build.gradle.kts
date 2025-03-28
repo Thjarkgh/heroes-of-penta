@@ -185,6 +185,7 @@ dependencies {
   implementation(platform(libs.reown.android.bom))
   implementation(libs.reown.android.core)
   implementation(libs.reown.appkit)
+  debugImplementation(libs.reown.signkit)
 
   //val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
   implementation(platform(libs.androidx.compose.bom))
@@ -245,8 +246,9 @@ dependencies {
 //  implementation(libs.ethers.core)
 //  implementation(libs.ethers.providers)
 //  implementation(libs.ethers.signers)
-}
+  implementation(libs.web3jCrypto)
 
+}
 fun Project.loadLocalProperty(
   path: String,
   propertyName: String,
