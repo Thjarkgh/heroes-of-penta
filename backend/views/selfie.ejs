@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+</head>
+<body>
+  <form action="/train" method="POST">
+    <label for="selfie" class="capture-button">Take a Selfie</label>
+    <input type="file" id="selfie" capture="user" accept="image/*">
+    <button type="submit">TRAIN!</button>
+  </form>
+  <form action="/train" method="POST">
+    <label for="photo" class="capture-button">Take a Photo</label>
+    <input type="file" id="photo" capture="environment" accept="image/*">   
+    <button type="submit">TRAIN!</button>
+  </form>
+</body>
+</html>
