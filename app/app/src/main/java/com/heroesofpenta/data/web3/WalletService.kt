@@ -35,40 +35,20 @@ object WalletService {
       methods = listOf("personal_sign", "eth_sendTransaction"),
       resources = null //// Here your dapp may request authorization with ReCaps
     )
-    AppKit.setAuthRequestParams(authPayloadParams)
-    AppKit.setDelegate(WalletDelegate)
+    //AppKit.setAuthRequestParams(authPayloadParams)
+//    AppKit.setDelegate(WalletDelegate)
+//    CoreClient.setDelegate(WalletDelegate)
   }
 
   @OptIn(ExperimentalStdlibApi::class)
-  fun assign(userId: UInt, callback: (error: Throwable?) -> Unit) {
+  fun assign(userId: UInt, callback: (error: Throwable?, url: Uri?) -> Unit) {
     val userWalletAddress = AppKit.getAccount()?.address
-      ?: return callback(IllegalStateException("no connected wallet"))
-
-    val argumentsLength = "1".padStart(length = 64, padChar = '0')
-    val accountId = userId.toHexString().padStart(length = 64, padChar = '0')
-    val data = "0x$REGISTER_ACCOUNT_CODE$argumentsLength$accountId"
-    val function = org.web3j.abi.datatypes.Function(
-      "registerAccount",
-      listOf(
-        Address(userWalletAddress),
-        Address("0x$CONTRACT_ADDRESS"),
-//        Address("0x$REGISTER_ACCOUNT_CODE"),
-//        Uint256(1),
-        Uint256(userId.toLong())
-
-//        Address(userWalletAddress),
-//        Address("0x$CONTRACT_ADDRESS"),
-//        Uint256(BigInteger(tokenId)),
-      ),  // input parameters. Change this based on the method you're using
-      listOf(object : TypeReference<Utf8String>() {}) // output parameters. Change this based on the method you're using,
-    )
-
-    val encodedFunction = FunctionEncoder.encode(function)
+      ?: return callback(IllegalStateException("no connected wallet"), null)
     val requestParams = Request(
       method = "eth_sendTransaction", // 0x17c859A939591c293375AC23307dbe868b387c84
-      params = "{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"data\":\"$encodedFunction\"}"
+      //"gas":"118020","gasPrice":"392093790",
+      params = "[{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"nonce\":\"7\",\"value\":\"0\",\"data\":\"0x64724f5e0000000000000000000000000000000000000000000000000000000000a9ad87\"}]" //"{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"data\":\"$encodedFunction\"}"
     )
-//    AppKit.getSession()?.performMethodCall
 //    MainApplication.session?.performMethodCall(
 //      Session.MethodCall.SendTransaction(
 //        txRequest,
