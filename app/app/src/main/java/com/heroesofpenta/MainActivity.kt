@@ -84,6 +84,20 @@ class MainActivity : AppCompatActivity() {
       }
     }
 
+//    setContent {
+//      WCSampleAppTheme {
+//        DappSampleHost()
+//      }
+//    }
+
+    if (intent?.dataString?.contains("mobileapp") == true) {
+      AppKit.handleDeepLink(intent.dataString ?: "") {
+        lifecycleScope.launch(Dispatchers.Main) {
+          Toast.makeText(this@MainActivity, "Error dispatching envelope: ${it.throwable.message}", Toast.LENGTH_SHORT).show()
+        }
+      }
+    }
+
     MainRepository.getUser(
       { user ->
         if (user == null) {
@@ -175,10 +189,22 @@ class MainActivity : AppCompatActivity() {
 //      // Go to account screen
 //      val intent = Intent(this, AccountActivity::class.java)
 //      startActivity(intent)
-//    }
-//
-//    // Finally, fetch the NFT heroes from the repository or server
-//    fetchNftHeroes()
+    //    }
+    //
+    //    // Finally, fetch the NFT heroes from the repository or server
+    //    fetchNftHeroes()
+  }
+
+  override fun onNewIntent(intent: Intent?) {
+    super.onNewIntent(intent)
+
+    if (intent?.dataString?.contains("mobileapp") == true) {
+      AppKit.handleDeepLink(intent.dataString ?: "") {
+        lifecycleScope.launch(Dispatchers.Main) {
+          Toast.makeText(this@MainActivity, "Error dispatching envelope: ${it.throwable.message}", Toast.LENGTH_SHORT).show()
+        }
+      }
+    }
   }
 
 //  private fun fetchNftHeroes() {
