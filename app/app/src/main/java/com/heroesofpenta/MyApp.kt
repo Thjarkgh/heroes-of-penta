@@ -19,7 +19,11 @@ class MyApp : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    WalletService.init()
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
+    }
+
+    //WalletService.init()
     RetrofitClient.init(applicationContext)
     val projectId = BuildConfig.reownProjectId // Get Project ID at https://cloud.reown.com/
     val connectionType = ConnectionType.AUTOMATIC //or ConnectionType.MANUAL
