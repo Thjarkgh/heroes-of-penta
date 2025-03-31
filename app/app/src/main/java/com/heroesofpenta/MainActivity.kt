@@ -114,10 +114,15 @@ class MainActivity : AppCompatActivity() {
               skipHalfExpanded = true
             )
 
-            val bottomSheetNavigator = BottomSheetNavigator(sheetState)// rememberBottomSheetNavigator() // BottomSheetNavigator(sheetState)
+            val bottomSheetNavigator =
+              BottomSheetNavigator(sheetState)// rememberBottomSheetNavigator() // BottomSheetNavigator(sheetState)
             val navController = rememberNavController(bottomSheetNavigator)
+            navController.openAppKit(
+              shouldOpenChooseNetwork = true, // | false
+              onError = {  }
+            )
 
-//            val viewModel: DappSampleViewModel = viewModel()
+            //            val viewModel: DappSampleViewModel = viewModel()
             ModalBottomSheetLayout(
               bottomSheetNavigator = bottomSheetNavigator,
               sheetBackgroundColor = Color.Transparent,
