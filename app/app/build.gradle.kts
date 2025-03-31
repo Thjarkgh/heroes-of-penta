@@ -4,6 +4,8 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.devtools.ksp)
+  id(libs.plugins.kotlin.parcelize.get().pluginId)
+  id(libs.plugins.kotlin.kapt.get().pluginId)
   //alias(libs.plugins.compose.compiler)
   //alias(libs.plugins.ethersAbigen)
 //  id(libs.plugins.kotlin.parcelize.get().pluginId)

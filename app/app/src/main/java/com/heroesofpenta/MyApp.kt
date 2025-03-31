@@ -23,13 +23,15 @@ class MyApp : Application() {
     RetrofitClient.init(applicationContext)
     val projectId = BuildConfig.reownProjectId // Get Project ID at https://cloud.reown.com/
     val connectionType = ConnectionType.AUTOMATIC //or ConnectionType.MANUAL
-    val telemetryEnabled: Boolean = true // not sure yet
+    val telemetryEnabled = true // not sure yet
     val appMetaData = Core.Model.AppMetaData(
       name = "Heroes of Penta",
       description = "Heroes of Penta",
       url = "https://heroesofpenta.com",
-      icons = listOf()/*list of icon url strings*/,
-      redirect = "kotlin-wallet-wc:/request" // Custom Redirect URI
+      icons = listOf("https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media")/*list of icon url strings*/,
+      redirect = "kotlin-dapp-wc://request", //"kotlin-wallet-wc:/request", // Custom Redirect URI
+      appLink = "https://heroesofpenta.com/mobileapp",
+      linkMode = true
     )
 
     CoreClient.initialize(
@@ -43,10 +45,11 @@ class MyApp : Application() {
     //projectId = projectId, connectionType = connectionType, application = this, metaData = appMetaData, telemetryEnabled = telemetryEnabled)
 
     AppKit.initialize(
-      init = Modal.Params.Init(CoreClient),
+      init = Modal.Params.Init(core = CoreClient),
       onSuccess = {
         // Callback will be called if initialization is successful
         ready = true
+        // not sure WalletService.init()
       },
       onError = { error ->
         // Error will be thrown if there's an issue during initialization
@@ -54,6 +57,7 @@ class MyApp : Application() {
         // throw InstantiationException(error.toString())
       }
     )
+
     AppKit.setChains(listOf(Modal.Model.Chain(
       chainName = "Scroll Sepolia",
       chainNamespace = "eip155",
@@ -66,6 +70,19 @@ class MyApp : Application() {
       blockExplorerUrl = "https://sepolia.scrollscan.com"
     )))
     AppKit.disconnect({},{})
+    //AppKit.setChains(AppKitChainsPresets.ethChains.values.toList())
+    WalletService.init()
+
+//        val authParams = Modal.Model.AuthPayloadParams(
+//            chains = AppKitChainsPresets.ethChains.values.toList().map { it.id },
+//            domain = "sample.kotlin.modal",
+//            uri = "https://web3inbox.com/all-apps",
+//            nonce = randomBytes(12).bytesToHex(),
+//            statement = "I accept the Terms of Service: https://yourDappDomain.com/",
+//            methods = EthUtils.ethMethods
+//        )
+//        AppKit.setAuthRequestParams(authParams)
+
   }
 
   private inline fun <reified T : Any> tag(currentClass: T): String {
