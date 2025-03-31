@@ -2,18 +2,23 @@ package com.heroesofpenta.data.web3
 
 
 //import com.heroesofpenta.MainActivity
+import android.net.Uri
+import androidx.core.net.toUri
 import com.heroesofpenta.data.repository.MainRepository
+import com.reown.android.CoreClient
 //import com.reown.android.Core
 //import com.reown.android.CoreClient
 //import com.reown.android.relay.ConnectionType
 import com.reown.appkit.client.AppKit
 import com.reown.appkit.client.Modal
+import com.reown.appkit.client.models.Session
 import com.reown.appkit.client.models.request.Request
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
+import timber.log.Timber
 import java.math.BigInteger
 import java.util.UUID
 

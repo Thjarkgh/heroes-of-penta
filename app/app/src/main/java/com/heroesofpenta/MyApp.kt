@@ -43,9 +43,10 @@ class MyApp : Application() {
       projectId = projectId,
       metaData = appMetaData,
       connectionType = connectionType,
-      telemetryEnabled = telemetryEnabled,
-      onError = { error -> throw InstantiationException(error.toString()) }
-    )
+      telemetryEnabled = telemetryEnabled
+    ) {
+      Timber.e(it.throwable, tag(this))
+    }
     //projectId = projectId, connectionType = connectionType, application = this, metaData = appMetaData, telemetryEnabled = telemetryEnabled)
 
     AppKit.initialize(
