@@ -69,20 +69,75 @@ object WalletService {
 
     AppKit.request(
       request = requestParams,
-      onError = { err -> throw err },
-      onSuccess = { ->
-        MainRepository.registerWallet(
-          walletAddress = userWalletAddress,
-          callback = { success ->
-            if (!success) {
-              callback(RuntimeException("Failed to update local wallet address"))
-            } else {
-              callback(null)
-            }
-          }
-        )
+      onError = { error ->
+        Timber.tag("WalletService").e(error)
+        callback(error, null)
+      },
+      onSuccess = { sentResult ->
+        Timber.tag("WalletService").i("yay $sentResult")
+        (AppKit.getSession() as Session.WalletConnectSession).redirect?.toUri()?.let { deepLinkUri -> callback(null, deepLinkUri) }
       }
     )
+
+//    val argumentsLength = "1".padStart(length = 64, padChar = '0')
+//    val accountId = userId.toHexString().padStart(length = 64, padChar = '0')
+//    val data = "0x$REGISTER_ACCOUNT_CODE$argumentsLength$accountId"
+//    val function = org.web3j.abi.datatypes.Function(
+//      "registerAccount",
+//      listOf(
+//        Address(userWalletAddress),
+//        Address("0x$CONTRACT_ADDRESS"),
+////        Address("0x$REGISTER_ACCOUNT_CODE"),
+////        Uint256(1),
+//        Uint256(userId.toLong())
+//
+////        Address(userWalletAddress),
+////        Address("0x$CONTRACT_ADDRESS"),
+////        Uint256(BigInteger(tokenId)),
+//      ),  // input parameters. Change this based on the method you're using
+//      listOf(object : TypeReference<Utf8String>() {}) // output parameters. Change this based on the method you're using,
+//    )
+//
+//    val encodedFunction = FunctionEncoder.encode(function)
+//    val requestParams = Request(
+//      method = "eth_sendTransaction", // 0x17c859A939591c293375AC23307dbe868b387c84
+//      params = "{\"to\":\"0x$CONTRACT_ADDRESS\",\"from\":\"$userWalletAddress\",\"data\":\"$encodedFunction\"}"
+//    )
+////    AppKit.getSession()?.performMethodCall
+////    MainApplication.session?.performMethodCall(
+////      Session.MethodCall.SendTransaction(
+////        txRequest,
+////        from = viewModel.address.value,
+////        to = contractAddress,
+////        nonce = nonce.transactionCount.toString(16),
+////        gasPrice = DefaultGasProvider.GAS_PRICE.toString(16),
+////        gasLimit = DefaultGasProvider.GAS_LIMIT.toString(16),
+////        value = BigInteger.ZERO.toString(16),
+////        data = endcodedFunction
+////      )
+////    ) { resp ->
+////      // do something with callback
+////    }
+////    val i = Intent(Intent.ACTION_VIEW)
+////    i.data = Uri.parse("wc:")
+////    context.startActivity(i)
+//
+//    AppKit.request(
+//      request = requestParams,
+//      onError = { err -> throw err },
+//      onSuccess = { ->
+//        MainRepository.registerWallet(
+//          walletAddress = userWalletAddress,
+//          callback = { success ->
+//            if (!success) {
+//              callback(RuntimeException("Failed to update local wallet address"))
+//            } else {
+//              callback(null)
+//            }
+//          }
+//        )
+//      }
+//    )
   }
 
   fun connect(onSuccess: (url: String) -> Unit, onError: (err: Modal.Model.Error) -> Unit) {
