@@ -2,7 +2,7 @@
 accompanistNavigationMaterial = "0.34.0"
 #activityCompose = "1.10.1"
 composeViewModel = "2.8.0"
-agp = "8.8.2"
+agp = "8.9.1"
 androidBom = "1.3.0"
 browser = "1.8.0"
 coilCompose = "2.6.0"
@@ -107,4 +107,6 @@ web3jCrypto = { module = "org.web3j:crypto", version.ref = "web3j" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 #compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
