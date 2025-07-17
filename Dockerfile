@@ -32,7 +32,7 @@ RUN npm ci
 COPY --chown=node:node . .
 
 RUN npm run build
-RUN npm test
+RUN npm run test
 
 FROM base
 
