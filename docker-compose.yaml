@@ -142,6 +142,7 @@ services:
         - ./deploy/bin/container:/usr/local/bin
         - ./deploy/sites:/var/www/vhosts/
         - ./deploy/acme:/root/.acme.sh/
+        - ./deploy/letsencrypt:/etc/letsencrypt:ro
         - ./deploy/logs:/usr/local/lsws/logs/
     ports:
       - 80:80
