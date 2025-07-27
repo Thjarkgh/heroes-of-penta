@@ -59,14 +59,14 @@ const start = async () => {
     if (req.params.folder.includes('..') || req.params.file.includes('..')) {
       res.sendStatus(404);
     } else {
-      res.sendFile(path.resolve(basepath, '..', 'certificates', req.params.folder, req.params.file));
+      res.sendFile(path.resolve(basepath, '..', 'certificates', '.well-known', req.params.folder, req.params.file));
     }
   });
   app.get('/.well-known/:file', (req, res) => {
     if (req.params.file.includes('..')) {
       res.sendStatus(404);
     } else {
-      res.sendFile(path.resolve(basepath, '..', 'certificates', req.params.file));
+      res.sendFile(path.resolve(basepath, '..', 'certificates', '.well-known', req.params.file));
     }
   });
 
