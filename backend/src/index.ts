@@ -62,20 +62,13 @@ const start = async () => {
   app.use('/index.html', express.static(path.resolve(basepath, 'index.html')));
   app.use('/privacy.html', express.static(path.resolve(__dirname, '..', 'static', 'privacy.html')));
   app.use('/terms.html', express.static(path.resolve(__dirname, '..', 'static', 'terms.html')));
-  
-  //app.use('/.well-known/acme-challenge', express.static(path.resolve(basepath, '..', 'certificates', 'acme-challenge')))
-  app.get('/.well-known/:folder/:file', (req, res) => {
-    if (req.params.folder.includes('..') || req.params.file.includes('..')) {
-      res.sendStatus(404);
-    } else {
-      res.sendFile(path.resolve(basepath, '..', 'certificates', '.well-known', req.params.folder, req.params.file));
-    }
-  });
-  app.get('/.well-known/:file', (req, res) => {
+
+  app.use('/.well-known/assetlinks.json', express.static(path.resolve(basepath, '..', 'certificates', '.well-known', 'assetlinks.json')));
+  app.get('/.well-known/acme-challenge/:file', (req, res) => {
     if (req.params.file.includes('..')) {
       res.sendStatus(404);
     } else {
-      res.sendFile(path.resolve(basepath, '..', 'certificates', '.well-known', req.params.file));
+      res.sendFile(path.resolve(basepath, '..', 'certificates', '.well-known', 'acme-challenge', req.params.file));
     }
   });
 
