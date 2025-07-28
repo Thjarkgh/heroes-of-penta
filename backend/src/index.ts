@@ -46,6 +46,15 @@ const start = async () => {
   }));  // for parsing application/json
   app.use(express.urlencoded({ extended: true, limit: '1mb' })) //for parsing application/x-www-form-urlencoded
 
+  // only allow http for acme-challenge, otherwise redirect to https
+  app.use((req, res, next) => {
+    if (req.secure || req.path.startsWith('/.well-known/acme-challenge/')) {
+      next();
+    } else {
+      res.redirect(301, 'https://' + req.headers.host + req.url);
+    }
+  });
+
   const basepath = getBaseDir(__dirname);
   app.use('/favicon.png', express.static(path.resolve(basepath, 'favicon.png')));
   app.use('/style.css', express.static(path.resolve(basepath, 'style.css')));
