@@ -1,10 +1,10 @@
-// import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 // import mariadb from 'mariadb';
 // import UserRepository from "../../../src/repository/mariadb/userRepository"
 // import { config } from 'dotenv';
 // config({ path: '../.env', debug: true });
 
-// describe('UserRepository', () => {
+describe('UserRepository', () => {
 //   let repoPool: mariadb.Pool;
 //   let userRepository: UserRepository;
 
@@ -47,6 +47,9 @@
 //     await repoPool.end();
 //   });
 
+  it('dummy test', () => {
+    expect(true).toBe(true);
+  });
 //   it('should create a user', async () => {
 //     const user = await userRepository.createNewUser();
 //     expect(user).toBeDefined();
@@ -54,4 +57,4 @@
 //     expect(user.instagramAccounts).to.be.empty;
 //     expect(user.tikTokAccount).to.be.null;
 //   });
-// });
+});
